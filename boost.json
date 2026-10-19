@@ -1,0 +1,8 @@
+{
+    "agents": [
+        "antigravity",
+        "codex",
+        "claude_code"
+    ],
+    "guidelines": true
+}

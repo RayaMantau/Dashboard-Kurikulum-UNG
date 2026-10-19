@@ -1,0 +1,16 @@
+:root {
+    --color-primary: #7A1F2B;
+    --color-primary-dark: #5C1620;
+    --color-primary-hover: #681A25;
+    --color-primary-soft: #F6E9EC;
+    --color-primary-border: #E7C8CE;
+    --color-on-primary: #FFFFFF;
+    --color-info: #1D4ED8;
+    --color-info-soft: #EFF6FF;
+    --color-success: #166534;
+    --color-success-soft: #DCFCE7;
+    --color-warning: #92400E;
+    --color-warning-soft: #FEF3C7;
+    --color-danger: #B91C1C;
+    --color-danger-soft: #FEF2F2;
+}

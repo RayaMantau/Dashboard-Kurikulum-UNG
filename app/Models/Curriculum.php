@@ -17,6 +17,8 @@ class Curriculum extends Model
         'name',
         'year',
         'effective_year',
+        'ratified_at',
+        'external_document_url',
         'total_sks',
         'total_semesters',
         'description',
@@ -32,6 +34,7 @@ class Curriculum extends Model
     protected $casts = [
         'year' => 'integer',
         'effective_year' => 'integer',
+        'ratified_at' => 'immutable_date',
         'total_sks' => 'decimal:2',
         'total_semesters' => 'integer',
         'status' => CurriculumStatus::class,
@@ -44,6 +47,15 @@ class Curriculum extends Model
     public function studyProgram(): BelongsTo
     {
         return $this->belongsTo(StudyProgram::class);
+    }
+
+    public function safeExternalDocumentUrl(): ?string
+    {
+        $url = $this->external_document_url;
+
+        return is_string($url) && strlen($url) <= 2048 && filter_var($url, FILTER_VALIDATE_URL)
+            && in_array(strtolower((string) parse_url($url, PHP_URL_SCHEME)), ['http', 'https'], true)
+            ? $url : null;
     }
 
     public function creator(): BelongsTo

@@ -17,9 +17,9 @@ use Illuminate\Validation\ValidationException;
 
 class CurriculumService
 {
-    private const METADATA_FIELDS = ['name', 'year', 'effective_year', 'total_sks', 'total_semesters', 'description'];
+    private const METADATA_FIELDS = ['name', 'year', 'effective_year', 'total_sks', 'total_semesters', 'description', 'ratified_at', 'external_document_url'];
 
-    private const AUDIT_FIELDS = ['study_program_id', 'name', 'year', 'effective_year', 'total_sks', 'total_semesters', 'description', 'status', 'created_by', 'updated_by'];
+    private const AUDIT_FIELDS = ['study_program_id', 'name', 'year', 'effective_year', 'total_sks', 'total_semesters', 'description', 'status', 'created_by', 'updated_by', 'ratified_at', 'external_document_url'];
 
     /** @param array<string, mixed> $data */
     public function saveMetadata(User $actor, array $data, ?Curriculum $curriculum = null): Curriculum

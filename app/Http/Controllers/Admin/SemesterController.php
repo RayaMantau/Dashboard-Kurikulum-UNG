@@ -19,7 +19,7 @@ class SemesterController extends Controller
 
         return view('admin.semesters.index', [
             'curriculum' => $curriculum,
-            'semesters' => $curriculum->semesters()->withExists('curriculumCourses')->orderBy('semester_number')->get(),
+            'semesters' => $curriculum->semesters()->withCount('curriculumCourses')->orderBy('semester_number')->get(),
         ]);
     }
 
@@ -33,6 +33,7 @@ class SemesterController extends Controller
     public function edit(Request $request, Curriculum $curriculum, Semester $semester, SemesterService $service): View
     {
         $service->authorize($request->user(), $curriculum, $semester, true);
+        $semester->loadExists('curriculumCourses');
 
         return view('admin.semesters.edit', compact('curriculum', 'semester'));
     }

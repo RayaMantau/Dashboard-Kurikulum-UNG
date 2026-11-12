@@ -200,3 +200,9 @@ Browser capability tidak tersedia; visual desktop/mobile QA menjadi checklist
 operator. Hosting/HTTPS/permissions/backup restore, engine database production,
 concurrency nyata dan load testing harus diverifikasi di lingkungan tujuan.
 Tidak ada remote deployment atau fitur post-MVP yang dikerjakan.
+
+## Phase 11.1: Curriculum Management UI Restructure
+
+Revisi navigasi Admin Prodi: tabel sepuluh kolom dengan tanggal pengesahan dan Monev existing, tombol Semester/Dokumen terpisah, assignment melalui semester, serta penghapusan semester kosong dari halaman edit dengan konfirmasi. Sidebar master Course dipertahankan; tautan beranda sidebar dan Reset daftar kurikulum dihapus.
+
+Tidak ada migration, dependency, perubahan Policy, workflow, visibilitas publik, atau rumus Monev. Filter semester pada route assignment existing dibatasi pada curriculum yang telah diotorisasi. Pengujian mencakup posisi aksi, semester terpilih, penolakan lintas kurikulum, navigasi read-only status terkunci, dan halaman publik tanpa kontrol mutation. Verifikasi visual desktop/mobile masih memerlukan browser.

@@ -333,3 +333,11 @@ label enum Bahasa Indonesia existing dipertahankan (Menunggu Review/Perlu Revisi
 Tombol pending dipulihkan pada pageshow agar browser Back tidak meninggalkan form
 terkunci. Desktop/mobile ditinjau pada source; verifikasi visual belum dilakukan
 karena capability browser tidak tersedia. Tidak ada klaim screenshot/visual QA.
+
+### Phase 11.1: navigasi pengelolaan kurikulum
+
+Daftar Admin Prodi menggunakan sepuluh kolom: Tahun Perbaikan Kurikulum, Tahun Berlaku, Total SKS, Semester, Tanggal Pengesahan, Monev Kurikulum, Dokumen, Status, Terakhir Diperbarui, Aksi. Nama versi tetap sebagai teks pendukung tahun. Tanggal null ditulis Belum ditetapkan; Monev memakai komponen Phase 11. Dokumen dihitung melalui withCount.
+
+Semester dan Dokumen memiliki tombol pada kolom masing-masing. Aksi berisi Edit, Riwayat, Ajukan Review sesuai Policy. Kurikulum terkunci menyediakan tautan Lihat, tanpa kontrol mutation. Tombol outline/primary memakai kelompok flex-wrap dan tabel scroll berlabel. Reset dan Kembali ke beranda di sidebar internal dihapus. Master Mata Kuliah tetap berada di sidebar.
+
+Struktur Semester menyediakan Edit Semester dan Kelola Mata Kuliah per semester. Hapus hanya pada Edit Semester dalam Zona Berbahaya, dengan konfirmasi checkbox wajib untuk semester kosong. Server tetap memeriksa izin dan keterisian semester.

@@ -172,8 +172,18 @@
 .form-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 24px; padding-top: 16px; }
 .faculty-table { min-width: 720px; }
 .faculty-table th:first-child { width: 30%; }
-.curriculum-table { min-width: 960px; }
-.curriculum-table th:first-child { width: 24%; }
+.curriculum-table { min-width: 1320px; table-layout: fixed; }
+.curriculum-table th:first-child { width: 160px; }
+.curriculum-table th:nth-child(6) { width: 200px; }
+.curriculum-table th:last-child { width: 190px; }
+.table-actions { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px; }
+.primary-button.table-button { padding: 9px 12px; min-height: 44px; font-size: 13px; flex-shrink: 1; }
+.internal-portal .primary-button.secondary-button { color: #334155; background: #FFFFFF; border: 1px solid #CBD5E1; text-decoration: none; }
+.internal-portal .primary-button.secondary-button:hover { color: var(--color-primary-dark); background: var(--color-primary-soft); border-color: var(--color-primary); }
+.table-support { display: block; margin-top: 8px; font-weight: 400; color: #475569; }
+.danger-zone { margin-top: 24px; border-color: var(--color-danger); }
+.danger-zone summary { cursor: pointer; padding-block: 12px; }
+.delete-confirmation { display: block; margin-block: 16px; }
 .management-pagination { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 24px; font-size: 14px; }
 .management-pagination > div { display: flex; gap: 12px; }
 .management-pagination a, .management-pagination span { padding: 12px; border: 1px solid #E2E8F0; border-radius: 8px; text-decoration: none; }

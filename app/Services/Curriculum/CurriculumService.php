@@ -85,7 +85,7 @@ class CurriculumService
         }
 
         return [
-            'curricula' => $query->orderByDesc('year')->orderByDesc('id')->paginate(15)->appends($filters),
+            'curricula' => $query->withCount('documents')->orderByDesc('year')->orderByDesc('id')->paginate(15)->appends($filters),
             'years' => $years,
         ];
     }

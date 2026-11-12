@@ -42,7 +42,6 @@
                 </select>
             </div>
             <button type="submit" class="primary-button action-button">Terapkan</button>
-            <a href="{{ route('admin.curricula.index') }}">Reset</a>
         </form>
         @if($curricula->isEmpty())
             <div class="dashboard-empty">
@@ -52,18 +51,36 @@
             <div class="dashboard-table-wrap" role="region" aria-label="Daftar versi kurikulum" tabindex="0">
                 <table class="dashboard-table curriculum-table">
                     <caption class="sr-only">Versi kurikulum Program Studi {{ $studyProgram->name }}</caption>
-                    <thead><tr><th scope="col">Nama Kurikulum</th><th scope="col">Tahun</th><th scope="col">Tahun Berlaku</th><th scope="col">Total SKS</th><th scope="col">Jumlah Semester</th><th scope="col">Status</th><th scope="col">Terakhir Diperbarui</th><th scope="col">Aksi</th></tr></thead>
+                    <thead><tr><th scope="col">Tahun Perbaikan Kurikulum</th><th scope="col">Tahun Berlaku</th><th scope="col">Total SKS</th><th scope="col">Semester</th><th scope="col">Tanggal Pengesahan</th><th scope="col">Monev Kurikulum</th><th scope="col">Dokumen</th><th scope="col">Status</th><th scope="col">Terakhir Diperbarui</th><th scope="col">Aksi</th></tr></thead>
                     <tbody>
                         @foreach($curricula as $curriculum)
                             <tr>
-                                <th scope="row">{{ $curriculum->name }}</th>
-                                <td>{{ $curriculum->year }}</td>
+                                <th scope="row">{{ $curriculum->year }}<small class="table-support">{{ $curriculum->name }}</small></th>
                                 <td>{{ $curriculum->effective_year ?? '-' }}</td>
                                 <td>{{ number_format((float) $curriculum->total_sks, 2, ',', '.') }}</td>
-                                <td>{{ $curriculum->total_semesters }}</td>
+                                <td>
+                                    <a class="primary-button action-button table-button secondary-button" href="{{ route('admin.curricula.semesters.index', $curriculum) }}">@can('update', $curriculum)Kelola Semester
+                                    @else
+                                        Lihat Semester
+                                    @endcan</a>
+                                    <small class="table-support">{{ $curriculum->total_semesters }} semester</small>
+                                </td>
+                                <td>{{ $curriculum->ratified_at?->locale('id')->translatedFormat('j F Y') ?? 'Belum ditetapkan' }}</td>
+                                <td><x-monitoring-status :curriculum="$curriculum" /></td>
+                                <td>
+                                    <a class="primary-button action-button table-button secondary-button" href="{{ route('admin.curricula.documents.index', $curriculum) }}">@can('update', $curriculum)Kelola Dokumen
+                                    @else
+                                        Lihat Dokumen
+                                    @endcan</a>
+                                    <small class="table-support">{{ $curriculum->documents_count ? $curriculum->documents_count.' dokumen' : 'Belum ada dokumen' }}</small>
+                                </td>
                                 <td><x-internal.status-badge :status="$curriculum->status" /></td>
                                 <td>{{ $curriculum->updated_at?->format('d/m/Y H:i') ?? '-' }}</td>
-                                <td><a href="{{ route('internal.curricula.history', $curriculum) }}">Riwayat</a> <a href="{{ route('admin.curricula.semesters.index', $curriculum) }}">Semester</a> <a href="{{ route('admin.curricula.courses.index', $curriculum) }}">Mata Kuliah</a> <a href="{{ route('admin.curricula.documents.index', $curriculum) }}">Dokumen</a> @can('submit', $curriculum)<a href="{{ route('admin.curricula.submit.confirm', $curriculum) }}">Ajukan Review</a>@endcan @can('update', $curriculum)<a href="{{ route('admin.curricula.edit', $curriculum) }}" aria-label="Edit {{ $curriculum->name }}">Edit</a>@else<span class="dashboard-muted">Terkunci</span>@endcan</td>
+                                <td><div class="table-actions">
+                                    @can('update', $curriculum)<a class="primary-button action-button table-button secondary-button" href="{{ route('admin.curricula.edit', $curriculum) }}" aria-label="Edit {{ $curriculum->name }}">Edit</a>@else<span class="dashboard-muted">Terkunci</span>@endcan
+                                    <a class="primary-button action-button table-button secondary-button" href="{{ route('internal.curricula.history', $curriculum) }}">Riwayat</a>
+                                    @can('submit', $curriculum)<a class="primary-button action-button table-button" href="{{ route('admin.curricula.submit.confirm', $curriculum) }}">Ajukan Review</a>@endcan
+                                </div></td>
                             </tr>
                         @endforeach
                     </tbody>

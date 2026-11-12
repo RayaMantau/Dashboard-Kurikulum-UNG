@@ -37,12 +37,14 @@ class UiPolishTest extends TestCase
         $user = User::factory()->create(['is_active' => true, 'role' => UserRole::STUDY_PROGRAM_ADMIN, 'study_program_id' => $program->id]);
         $curriculum = Curriculum::factory()->create(['study_program_id' => $program->id]);
         $semester = Semester::factory()->create(['curriculum_id' => $curriculum->id]);
-        Semester::factory()->create(['curriculum_id' => $curriculum->id, 'semester_number' => 255]);
+        $emptySemester = Semester::factory()->create(['curriculum_id' => $curriculum->id, 'semester_number' => 255]);
         $course = Course::factory()->create(['study_program_id' => $program->id]);
         CurriculumCourse::factory()->create(['curriculum_id' => $curriculum->id, 'semester_id' => $semester->id, 'course_id' => $course->id]);
         Document::factory()->create(['curriculum_id' => $curriculum->id]);
         $this->actingAs($user);
-        foreach (['semesters', 'courses', 'documents'] as $area) {
+        $this->get(route('admin.curricula.semesters.edit', [$curriculum, $emptySemester]))->assertOk()
+            ->assertSee('danger-button', false)->assertSee('value="DELETE"', false)->assertSee('name="_token"', false);
+        foreach (['courses', 'documents'] as $area) {
             $this->get(route('admin.curricula.'.$area.'.index', $curriculum))->assertOk()
                 ->assertSee('danger-button', false)->assertSee('value="DELETE"', false)->assertSee('name="_token"', false);
         }

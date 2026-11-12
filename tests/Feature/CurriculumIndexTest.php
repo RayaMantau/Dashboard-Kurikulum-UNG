@@ -71,7 +71,7 @@ class CurriculumIndexTest extends TestCase
         $response = $this->actingAs($user)->get(route('admin.curricula.index'))->assertOk()
             ->assertSee('Program Studi Teknik Informatika')->assertSee($curriculum->name)
             ->assertDontSee($curriculum->name, false)->assertSee('2027')->assertSee('2028')
-            ->assertSee('145,50')->assertSee('Jumlah Semester')->assertSee('01/09/2026 12:30')
+            ->assertSee('145,50')->assertSee('Lihat Semester')->assertSee('8 semester')->assertDontSee('Jumlah Semester')->assertSee('01/09/2026 12:30')
             ->assertSee('status-published', false)->assertSee('Dipublikasikan')
             ->assertSee('href="'.route('admin.curricula.create').'"', false)->assertDontSee('href="'.route('admin.curricula.edit', $curriculum).'"', false);
         $this->assertSame(8, $response->viewData('curricula')->first()->total_semesters);

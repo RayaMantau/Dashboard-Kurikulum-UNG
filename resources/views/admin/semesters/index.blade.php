@@ -8,7 +8,6 @@
         <div><p class="eyebrow">STRUKTUR KURIKULUM</p><h1>Struktur Semester</h1><p>{{ $curriculum->name }} ({{ $curriculum->year }})</p><p>Rencana {{ $curriculum->total_semesters }} semester</p><x-internal.status-badge :status="$curriculum->status" /></div>
         @can('update', $curriculum)<a class="primary-button action-button" href="{{ route('admin.curricula.semesters.create', $curriculum) }}">Tambah Semester</a>@endcan
     </header>
-    <p><a href="{{ route('admin.curricula.courses.index', $curriculum) }}">Mata Kuliah Kurikulum</a></p>
     <section class="portal-card">
         @if($semesters->isEmpty())
             <div class="dashboard-empty"><h2>Belum ada semester pada kurikulum ini.</h2></div>
@@ -20,21 +19,14 @@
                     @foreach($semesters as $semester)
                         <tr>
                             <td>{{ $semester->semester_number }}</td><th scope="row">{{ $semester->name }}</th><td>{{ number_format((float) $semester->total_sks, 2, ',', '.') }}</td>
-                            <td>
+                            <td><div class="table-actions">
                                 @can('update', $curriculum)
-                                    <a href="{{ route('admin.curricula.semesters.edit', [$curriculum, $semester]) }}">Edit</a>
-                                    @if(!$semester->curriculum_courses_exists)
-                                        <form method="POST" action="{{ route('admin.curricula.semesters.destroy', [$curriculum, $semester]) }}" data-pending-form>
-                                            @csrf @method('DELETE')
-                                            <button type="submit" class="primary-button action-button danger-button" data-pending-label="Menghapus..." aria-label="Hapus {{ $semester->name }}">Hapus Semester</button>
-                                        </form>
-                                    @else
-                                        <span class="dashboard-muted">Berisi mata kuliah</span>
-                                    @endif
+                                    <a class="primary-button action-button table-button secondary-button" href="{{ route('admin.curricula.semesters.edit', [$curriculum, $semester]) }}">Edit Semester</a>
+                                    <a class="primary-button action-button table-button" href="{{ route('admin.curricula.courses.index', [$curriculum, 'semester' => $semester->id]) }}">Kelola Mata Kuliah</a>
                                 @else
-                                    <span class="dashboard-muted">Terkunci</span>
+                                    <a class="primary-button action-button table-button secondary-button" href="{{ route('admin.curricula.courses.index', [$curriculum, 'semester' => $semester->id]) }}">Lihat Mata Kuliah</a>
                                 @endcan
-                            </td>
+                            </div><small class="table-support">{{ $semester->curriculum_courses_count }} mata kuliah</small></td>
                         </tr>
                     @endforeach
                     </tbody>

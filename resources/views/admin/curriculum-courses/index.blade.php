@@ -6,7 +6,7 @@
 @section('content')
     <header class="management-heading">
         <div><p class="eyebrow">STRUKTUR KURIKULUM</p><h1>Mata Kuliah Kurikulum</h1><p>{{ $curriculum->name }} ({{ $curriculum->year }})</p><x-internal.status-badge :status="$curriculum->status" /></div>
-        @can('update', $curriculum)<a class="primary-button action-button" href="{{ route('admin.curricula.courses.create', $curriculum) }}">Tambah Mata Kuliah ke Kurikulum</a>@endcan
+        @can('update', $curriculum)<a class="primary-button action-button" href="{{ route('admin.curricula.courses.create', [$curriculum, 'semester' => $selectedSemester?->id]) }}">Tambah Mata Kuliah ke Kurikulum</a>@endcan
     </header>
     <p>Program Studi: {{ $curriculum->studyProgram->name }}</p>
     <p><a href="{{ route('admin.curricula.semesters.index', $curriculum) }}">Struktur Semester</a></p>
@@ -27,8 +27,8 @@
                                 <td>{{ $assignment->prerequisite_notes ?? '-' }}</td>
                                 <td>
                                     @can('update', $curriculum)
-                                        <a href="{{ route('admin.curricula.courses.edit', [$curriculum, $assignment]) }}">Edit</a>
-                                        <form method="POST" action="{{ route('admin.curricula.courses.destroy', [$curriculum, $assignment]) }}" data-pending-form>
+                                        <a class="primary-button action-button table-button secondary-button" href="{{ route('admin.curricula.courses.edit', [$curriculum, $assignment, 'semester' => $selectedSemester?->id]) }}">Edit</a>
+                                        <form method="POST" action="{{ route('admin.curricula.courses.destroy', [$curriculum, $assignment, 'semester' => $selectedSemester?->id]) }}" data-pending-form>
                                             @csrf @method('DELETE')
                                             <button type="submit" class="primary-button action-button danger-button" data-pending-label="Menghapus..." aria-label="Hapus {{ $assignment->course_name }} dari kurikulum">Hapus dari Kurikulum</button>
                                         </form>

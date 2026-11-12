@@ -270,3 +270,9 @@ Klik Submit
  ├─ gagal → tampilkan daftar kekurangan
  └─ lolos → status submitted
 ```
+
+## Phase 11.1: alur navigasi Admin Prodi
+
+Daftar Kurikulum -> kolom Semester -> Struktur Semester -> Kelola Mata Kuliah pada semester -> daftar assignment yang difilter semester. Form tambah memilih semester konteks secara awal; validasi assignment tetap server-side. Setelah menyimpan, konteks mengikuti semester yang benar-benar tersimpan. Tanpa filter, route assignment lama tetap menampilkan semua semester.
+
+Daftar Kurikulum -> kolom Dokumen -> dokumen kurikulum. Riwayat dan Ajukan Review tetap pada kolom Aksi. Edit Semester -> Zona Berbahaya -> konfirmasi -> Hapus Semester kosong. Semester berisi mata kuliah tidak dapat dihapus. Kurikulum terkunci hanya memiliki akses baca pada struktur/dokumen. Master Course pada sidebar berbeda dari CurriculumCourse assignment; snapshot dan workflow tidak berubah.

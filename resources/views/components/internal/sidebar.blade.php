@@ -40,7 +40,6 @@
         </ul>
     </nav>
     <div class="sidebar-bottom">
-        <a href="{{ route('home') }}">Kembali ke beranda <span aria-hidden="true">&nearr;</span></a>
         <p>Dashboard Kurikulum UNG</p>
     </div>
 </aside>

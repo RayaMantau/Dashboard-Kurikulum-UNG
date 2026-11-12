@@ -13,6 +13,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Kaprodi\CurriculumPublicationController;
 use App\Http\Controllers\Kaprodi\CurriculumReviewController;
 use App\Http\Controllers\PublicCurriculumController;
+use App\Http\Controllers\PublicCurriculumMonitoringController;
 use App\Http\Controllers\PublicFacultyController;
 use App\Http\Controllers\PublicSearchController;
 use App\Http\Controllers\PublicStudyProgramController;
@@ -28,6 +29,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\View\View;
 
 Route::get('/', HomeController::class)->name('home');
+Route::get('/monitoring-kurikulum', PublicCurriculumMonitoringController::class)->name('monitoring.index');
 Route::get('/search', PublicSearchController::class)->name('search');
 Route::get('/fakultas', [PublicFacultyController::class, 'index'])->name('faculties.index');
 Route::get('/fakultas/{faculty:slug}', [PublicFacultyController::class, 'show'])->name('faculties.show');

@@ -236,7 +236,8 @@ class RoleDashboardTest extends TestCase
         $secondCount = count(DB::getQueryLog());
         DB::disableQueryLog();
 
-        $this->assertCount(10, $response->viewData('content')['programs']);
+        $this->assertCount(12, $response->viewData('content')['programs']);
+        $this->assertSame(15, $response->viewData('content')['programs']->perPage());
         $this->assertSame(12, $response->viewData('metrics')['Total Program Studi']);
         $this->assertSame($firstCount, $secondCount);
     }

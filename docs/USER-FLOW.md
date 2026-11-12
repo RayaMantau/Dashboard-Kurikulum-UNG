@@ -2,6 +2,21 @@
 
 ## 1. Public Flow
 
+### Monitoring Kurikulum — Phase 11
+
+Beranda/navbar > Monitoring Kurikulum > lihat tahun perbaikan, tanggal pengesahan,
+jadwal Minor/Rekonstruksi, dan link eksternal. Lihat Dokumen (N) membuka bagian
+dokumen pada detail kurikulum existing; unduhan tetap melalui route aplikasi
+terkontrol. Tidak ada uploader, raw audit, catatan review, path storage atau aksi
+mutation pada halaman monitoring. Prodi tanpa published tetap tampil netral;
+versi archived dapat dicari pada halaman versi Prodi existing.
+
+Admin Prodi mengisi tahun versi/perbaikan, tanggal pengesahan resmi dan URL melalui
+Tambah/Edit Kurikulum existing. Hanya draft/revision milik sendiri; tidak ada
+jalur koreksi published/archived baru. Field baru nullable dan tidak menambah
+prasyarat submission. Admin Fakultas melihat tabel monitoring Prodi sendiri
+dengan status versi terbaru tambahan dan pagination, tanpa akses edit.
+
 ### Production Phase 8A–8H
 
 Phase 8H memverifikasi alur Beranda > Fakultas > Prodi > versi Curriculum >

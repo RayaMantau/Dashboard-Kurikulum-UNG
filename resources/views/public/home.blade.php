@@ -12,6 +12,7 @@
                     <span>Terbuka untuk semua.<br>Tanpa perlu akun.</span>
                 </div>
                 <p class="hero-note"><a href="{{ route('search') }}">Cari mata kuliah dalam kurikulum aktif dan arsip.</a></p>
+                <p class="hero-note"><a href="{{ route('monitoring.index') }}">Monitoring Kurikulum dan jadwal Monev Program Studi.</a></p>
             </div>
             <div class="hero-art" aria-hidden="true">
                 <div class="art-heading"><span>KURIKULUM UNG</span><span>AKADEMIK</span></div>

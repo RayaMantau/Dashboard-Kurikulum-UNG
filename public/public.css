@@ -77,7 +77,7 @@ h3 { font-size: 18px; line-height: 1.5; letter-spacing: -.015em; margin: 18px 0 
     #public-navigation ul { gap: 14px; }
     .hero-grid { gap: 32px; }
 }
-@media (max-width: 960px) {
+@media (max-width: 1200px) {
     .header-inner { flex-wrap: wrap; min-height: 80px; gap: 16px; }
     #public-navigation { width: 100%; padding-top: 12px; border-top: 1px solid var(--public-line); }
     #public-navigation ul { flex-wrap: wrap; gap: 16px 28px; }

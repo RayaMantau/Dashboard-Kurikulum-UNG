@@ -2,6 +2,14 @@
 
 ## 1. Permission Matrix
 
+Phase 11: monitoring publik hanya GET/HEAD, tanpa login, dengan current published
+pada Prodi/Faculty aktif. Akses arsip melalui halaman versi existing tetap memakai
+published/archived + kedua parent aktif, termasuk bagi user internal yang login.
+Tanggal pengesahan dan external URL mengikuti CurriculumPolicy::update existing:
+hanya Admin Prodi aktif, scope sendiri, status draft/revision. Role lain tidak
+mendapat izin edit; workflow dan scope tidak berubah. Monitoring Faculty memakai
+faculty_id authenticated user, mencakup seluruh Prodi sendiri via pagination.
+
   Fitur                    Prodi Admin   Kaprodi   Fakultas Admin   Universitas Admin
   ---------------------- ------------- --------- ---------------- -------------------
   View curriculum                    ✓         ✓                ✓                   ✓

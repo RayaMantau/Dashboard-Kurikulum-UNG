@@ -3,7 +3,7 @@ const publicToggle = document.querySelector('.menu-toggle');
 const publicHeader = document.querySelector('.public-header');
 
 if (publicMenu && publicToggle && publicHeader) {
-    const mobile = window.matchMedia('(max-width: 960px)');
+    const mobile = window.matchMedia('(max-width: 1200px)');
 
     const closeMenu = (restoreFocus = false) => {
         publicMenu.hidden = mobile.matches;

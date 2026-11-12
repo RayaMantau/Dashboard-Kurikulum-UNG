@@ -1,3 +1,4 @@
+<p><a href="{{ route('monitoring.index') }}">Monitoring Kurikulum Publik</a> — jadwal Monev kurikulum aktif seluruh Program Studi.</p>
 <div class="dashboard-columns">
     <section class="portal-card dashboard-section">
         <h2>Ringkasan Status Kurikulum</h2>

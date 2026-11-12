@@ -14,6 +14,7 @@
                 <li><a href="{{ route('faculties.index') }}" @if(request()->routeIs('faculties.*')) aria-current="page" @endif>Fakultas</a></li>
                 <li><a href="{{ route('study-programs.index') }}" @if(request()->routeIs('study-programs.*')) aria-current="page" @endif>Program Studi</a></li>
                 <li><a href="{{ route('search') }}" @if(request()->routeIs('search')) aria-current="page" @endif>Cari Mata Kuliah</a></li>
+                <li><a href="{{ route('monitoring.index') }}" @if(request()->routeIs('monitoring.*')) aria-current="page" @endif>Monitoring Kurikulum</a></li>
                 <li>
                     @auth
                         <a class="public-button button-small" href="{{ route('dashboard') }}">Dashboard Internal</a>

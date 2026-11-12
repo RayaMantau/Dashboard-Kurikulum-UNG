@@ -2,6 +2,12 @@
 
 ## Public — production Phase 8A–8H
 
+Tambahan Phase 11: `GET /monitoring-kurikulum` (`monitoring.index`), tanpa auth,
+satu baris per Prodi aktif di Faculty aktif, current published saja. Tidak ada
+POST/PUT/PATCH/DELETE monitoring publik. Navbar dan homepage menyediakan pintu
+masuk **Monitoring Kurikulum**. Arsip tetap melalui halaman versi existing.
+Menu publik responsif kini memakai breakpoint 1200px agar tambahan link muat.
+
 Phase 8H memverifikasi sepuluh route publik di bawah sebagai GET/HEAD, tanpa
 auth middleware atau mutation domain. Published/archived hanya tersedia jika
 Prodi dan Faculty aktif; login internal tidak memperluas visibilitas. Semua

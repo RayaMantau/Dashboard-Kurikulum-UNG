@@ -1,5 +1,38 @@
 # DEVELOPMENT-PLAN --- Dashboard Kurikulum UNG
 
+## Phase 11 — Curriculum Monitoring Revision — COMPLETE
+
+Revisi dosen diizinkan setelah engineering completion Phase 1–10. Branch kerja:
+phase-11-monitoring-revision, tanpa merge ke main. Monitoring publik read-only
+tersedia pada /monitoring-kurikulum. Satu baris per Prodi aktif di Faculty aktif,
+current published saja; archived tetap melalui halaman versi/detail existing.
+Tabel enam kolom dipakai juga pada dashboard Faculty sesuai scope, dengan status
+versi terbaru tambahan dan pagination 15 agar seluruh Prodi dapat dimonitor.
+
+year dipakai kembali sebagai tahun versi/perbaikan. Migration additive nullable
+ratified_at DATE dan external_document_url VARCHAR(2048) mempertahankan data lama.
+approved_at tetap timestamp workflow; pengesahan resmi tidak diinfer darinya.
+Monev dihitung +2/+4 tahun, date-only inklusif, leap-day tanpa overflow. URL hanya
+HTTP/HTTPS, diperiksa saat input dan render, escaped dengan noopener noreferrer.
+Dokumen tetap private dan download memakai route terkontrol existing.
+
+Form metadata Admin Prodi, audit/transaction/lock dan Policy existing dipakai ulang.
+Edit hanya own-Prodi draft/revision; public/role lain tidak mendapat mutation baru.
+Tidak ada reminder, status workflow baru, job, analytics, API atau fitur Phase 12.
+
+Validasi 11 November 2026: Phase 11 40 tests / 267 assertions PASS; regresi terkait
+246 tests / 2.859 assertions PASS; full suite 637 tests / 5.900 assertions PASS
+(baseline 597 / 5.632). Pint dan syntax public.js PASS. Migration diverifikasi
+melalui RefreshDatabase pada SQLite :memory:, tidak dijalankan ke DB lokal.
+Test ikhtisar Faculty yang sebelumnya membatasi 10 row diperbarui secara eksplisit
+untuk pagination 15; assertion scope dan jumlah query konstan dipertahankan.
+
+Visual browser QA belum dilakukan karena capability browser lokal tidak tersedia.
+Tabel memakai scroll wrapper dan teks wrapping; menu publik beralih pada 1200px.
+Sebelum deploy lakukan backup DB/PDF, migration normal dan smoke/visual QA sesuai
+DEPLOYMENT.md. Mengisi metadata monitoring pada published/archived yang sudah
+terkunci tidak disediakan; koreksi historis memerlukan keputusan terpisah.
+
 ## Catatan urutan implementasi aktual
 
 Daftar fase di bawah adalah rancangan awal, bukan status pelaksanaan aktual.

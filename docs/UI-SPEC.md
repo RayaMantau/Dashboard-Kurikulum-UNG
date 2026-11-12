@@ -2,6 +2,19 @@
 
 ## 1. Design Direction
 
+### Monitoring — Phase 11
+
+Tabel publik enam kolom memakai shared monitoring-table/status; ikhtisar Fakultas
+memakai tabel yang sama dengan tambahan Status Versi Terbaru. Nama Prodi/Faculty,
+nama published, tanggal, Monev dan link membungkus; wrapper tabel horizontal scroll
+focusable, bukan overflow halaman. Pagination 15 Prodi mengikuti nama ASC, ID ASC.
+Brand maroon tetap; Monev upcoming info, Minor warning, Rekonstruksi danger,
+tanggal kosong netral. Teks status dan kedua jadwal selalu menyertai warna.
+Label: Tahun Perbaikan Kurikulum, Tanggal Pengesahan, Link File Kurikulum.
+Link kosong menjadi Belum tersedia; tanggal kosong Belum ditetapkan dan Monev
+Belum dapat dihitung. Navbar publik berisi Monitoring Kurikulum; menu responsif
+beralih pada 1200px (CSS dan JS sama), tanpa menghapus navigasi existing.
+
 Style: **Modern Academic Portal**
 
 Prinsip: - clean - profesional - modern - informatif - whitespace -

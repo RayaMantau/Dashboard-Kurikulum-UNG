@@ -14,12 +14,12 @@ class SaveCurriculumRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        $this->replace($this->only(['name', 'year', 'effective_year', 'total_sks', 'total_semesters', 'description', '_token', '_method']));
+        $this->replace($this->only(['name', 'year', 'effective_year', 'total_sks', 'total_semesters', 'description', 'ratified_at', 'external_document_url', '_token', '_method']));
     }
 
     protected function failedValidation(Validator $validator): void
     {
-        request()->replace($this->only(['name', 'year', 'effective_year', 'total_sks', 'total_semesters', 'description']));
+        request()->replace($this->only(['name', 'year', 'effective_year', 'total_sks', 'total_semesters', 'description', 'ratified_at', 'external_document_url']));
         parent::failedValidation($validator);
     }
 
@@ -33,6 +33,8 @@ class SaveCurriculumRequest extends FormRequest
             'total_sks' => ['required', 'numeric', 'between:0,999.99', 'decimal:0,2'],
             'total_semesters' => ['required', 'integer', 'between:1,255'],
             'description' => ['nullable', 'string', 'max:10000'],
+            'ratified_at' => ['nullable', 'date_format:Y-m-d', 'after_or_equal:1000-01-01', 'before_or_equal:9995-12-31'],
+            'external_document_url' => ['nullable', 'string', 'url:http,https', 'max:2048'],
         ];
     }
 
@@ -57,6 +59,12 @@ class SaveCurriculumRequest extends FormRequest
             'total_semesters.between' => 'Jumlah semester harus antara 1 dan 255.',
             'description.string' => 'Deskripsi harus berupa teks.',
             'description.max' => 'Deskripsi maksimal 10.000 karakter.',
+            'ratified_at.date_format' => 'Tanggal pengesahan harus berupa tanggal yang valid (YYYY-MM-DD).',
+            'ratified_at.after_or_equal' => 'Tanggal pengesahan paling awal 1 Januari 1000.',
+            'ratified_at.before_or_equal' => 'Tanggal pengesahan paling akhir 31 Desember 9995 agar jadwal Monev dapat dihitung.',
+            'external_document_url.string' => 'Link file kurikulum harus berupa teks.',
+            'external_document_url.url' => 'Link file kurikulum harus berupa URL HTTP atau HTTPS yang valid.',
+            'external_document_url.max' => 'Link file kurikulum maksimal 2.048 karakter.',
         ];
     }
 }

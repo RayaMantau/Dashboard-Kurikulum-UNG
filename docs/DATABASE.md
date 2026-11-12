@@ -60,6 +60,12 @@ admin/kaprodi: faculty_id + study_program_id set
 
 ## 5. curricula
 
+Phase 11 menambahkan `ratified_at DATE NULL` (tanggal pengesahan resmi, berbeda
+dari `approved_at`) dan `external_document_url VARCHAR(2048) NULL`. Migration
+baru additive; existing rows bernilai null tanpa backfill buatan. `year` dipakai
+kembali sebagai tahun versi/perbaikan; tidak ada revision_year duplikat dan
+tidak ada unique tahun. Monev +2/+4 tahun dihitung, tidak disimpan.
+
 -   id PK
 -   study_program_id FK
 -   name

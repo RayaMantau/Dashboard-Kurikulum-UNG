@@ -2,6 +2,21 @@
 
 ## 1. Ringkasan Produk
 
+### Revisi dosen — Phase 11
+
+Monitoring Kurikulum tersedia tanpa login pada `/monitoring-kurikulum`, read-only.
+Kolom: Program Studi, Tahun Perbaikan Kurikulum, Tanggal Pengesahan, Dokumen,
+Link File Kurikulum, dan Monev Kurikulum. Satu baris per Prodi aktif di Faculty
+aktif menampilkan current published; tanpa published tampil keadaan kosong.
+Archived tetap tersedia melalui halaman versi/detail existing.
+
+`year` adalah tahun versi/perbaikan, bukan tahun timestamp workflow. Tanggal
+pengesahan resmi disimpan terpisah sebagai `ratified_at`; Monev Minor dimulai
+tepat +2 tahun, Rekonstruksi tepat +4 tahun. Jadwal menunjukkan periode, bukan
+bukti evaluasi telah dilaksanakan. Tidak ada status workflow baru atau reminder.
+Admin Prodi mengisi metadata dan link HTTP/HTTPS melalui form existing untuk
+draft/revision milik sendiri. Published/archived tetap terkunci.
+
 Dashboard Kurikulum UNG adalah portal web terpusat untuk menyediakan
 informasi kurikulum Program Studi di Universitas Negeri Gorontalo.
 

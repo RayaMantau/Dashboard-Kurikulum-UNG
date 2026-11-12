@@ -12,7 +12,14 @@
         <section aria-labelledby="metadata-title">
             <div class="section-heading"><h2 id="metadata-title">Informasi Kurikulum</h2></div>
             <dl class="public-metadata">
-                <div><dt>Tahun</dt><dd>{{ $curriculum->year }}</dd></div>
+                <div><dt>Tahun Perbaikan Kurikulum</dt><dd>{{ $curriculum->year }}</dd></div>
+                <div><dt>Tanggal Pengesahan</dt><dd>{{ $curriculum->ratified_at?->locale('id')->translatedFormat('j F Y') ?? 'Belum ditetapkan' }}</dd></div>
+                <div><dt>Link File Kurikulum</dt><dd>
+                    @if($externalUrl = $curriculum->safeExternalDocumentUrl())
+                        <a href="{{ $externalUrl }}" target="_blank" rel="noopener noreferrer">Buka File Kurikulum</a>
+                    @else Belum tersedia @endif
+                </dd></div>
+                <div><dt>Monev Kurikulum</dt><dd><x-monitoring-status :curriculum="$curriculum" /></dd></div>
                 @if($curriculum->effective_year !== null)<div><dt>Tahun berlaku</dt><dd>{{ $curriculum->effective_year }}</dd></div>@endif
                 <div><dt>Total SKS</dt><dd>{{ $curriculum->total_sks }}</dd></div>
                 <div><dt>Jumlah semester</dt><dd>{{ $curriculum->total_semesters }}</dd></div>

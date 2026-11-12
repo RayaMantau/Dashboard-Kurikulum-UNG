@@ -2,6 +2,37 @@
 
 ## 1. Stack
 
+### Monitoring revision — Phase 11
+
+PublicCurriculumMonitoringController melayani monitoring.index tanpa auth.
+Query Prodi wajib is_active dan whereHas Faculty aktif; satu current published
+di-eager-load per Prodi dengan limit relasi, published_at DESC, id DESC (deterministik
+juga pada duplikasi legacy). CurriculumMonitoringService::withCurrentCurriculum
+menerima query yang sudah dibatasi scope oleh caller; tidak mengubah Policy.
+Publik dan Faculty memakai pagination 15, urutan nama Prodi ASC lalu ID ASC.
+Faculty tetap mencakup Prodi nonaktif milik sendiri, tetapi tidak memberi link
+download publik untuk parent nonaktif. Jumlah dokumen memakai withCount, tanpa
+filesystem stat, uploader/path, atau query per baris. Lihat Dokumen menuju anchor
+detail publik, yang memakai streaming DocumentService existing.
+
+CurriculumMonitoringService::schedule menghitung dari immutable_date ratified_at:
+addYearsNoOverflow(2/4), dibandingkan hari ini pada config app.timezone (UTC),
+date-only dan inklusif pada batas. 29 Februari 2024 -> Minor 28 Februari 2026,
+Rekonstruksi 29 Februari 2028; setiap jadwal dihitung dari tanggal asli.
+Null menghasilkan unknown tanpa exception. Tidak menambah CurriculumStatus,
+kolom status Monev, job, notifikasi, atau perubahan submission/review/publication.
+
+SaveCurriculumRequest menerima tanggal YYYY-MM-DD nullable, rentang DATE MySQL
+1000-01-01 sampai 9995-12-31 agar +4 tahun masih dapat direpresentasikan. URL
+nullable string maksimal 2048, url:http,https. Field editable/audit whitelist pada
+CurriculumService mencakup dua field baru, dengan transaction/lock/Policy existing.
+Tanggal pengesahan tidak pernah diinfer dari approved_at; year tetap tahun versi.
+URL diperiksa ulang saat render melalui safeExternalDocumentUrl untuk menolak
+scheme unsafe pada legacy/import; Blade escaped, target blank memakai noopener
+noreferrer. Server tidak mengambil URL eksternal. External URL bukan pengganti
+Document untuk submission. Detail public published/archived menampilkan metadata
+monitoring juga; tidak ada perluasan visibilitas atau hak edit status locked.
+
 -   Laravel 13
 -   PHP
 -   MySQL

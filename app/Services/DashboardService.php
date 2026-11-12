@@ -12,6 +12,7 @@ use App\Models\Document;
 use App\Models\Faculty;
 use App\Models\StudyProgram;
 use App\Models\User;
+use App\Services\Curriculum\CurriculumMonitoringService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Gate;
 
@@ -112,6 +113,7 @@ class DashboardService
         if ($missingScope) {
             $programs->whereRaw('1 = 0');
         }
+        $programs = app(CurriculumMonitoringService::class)->withCurrentCurriculum($programs);
 
         return [
             'metrics' => [
@@ -122,14 +124,11 @@ class DashboardService
                 'Perlu Revisi' => $counts['revision'],
             ],
             'content' => [
-                'programs' => $programs->select(['study_programs.id', 'study_programs.name'])->addSelect([
-                    'published_curriculum_name' => Curriculum::query()->select('name')
-                        ->whereColumn('study_program_id', 'study_programs.id')->where('status', CurriculumStatus::PUBLISHED)
-                        ->orderByDesc('published_at')->orderByDesc('id')->limit(1),
+                'programs' => $programs->select(['study_programs.id', 'study_programs.name', 'study_programs.slug', 'study_programs.faculty_id', 'study_programs.is_active'])->addSelect([
                     'latest_curriculum_status' => Curriculum::query()->select('status')
                         ->whereColumn('study_program_id', 'study_programs.id')
                         ->orderByDesc('created_at')->orderByDesc('id')->limit(1),
-                ])->orderBy('name')->orderBy('id')->limit(10)->get(),
+                ])->orderBy('name')->orderBy('id')->paginate(15),
             ],
         ];
     }

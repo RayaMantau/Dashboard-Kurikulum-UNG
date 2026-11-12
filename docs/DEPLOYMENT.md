@@ -1,5 +1,11 @@
 # Deployment — Dashboard Kurikulum UNG
 
+Phase 11 menambah migration nullable ratified_at dan external_document_url pada
+curricula. Jalankan migrate --force sesuai prosedur backup/maintenance di bawah
+sebelum mengaktifkan kode Phase 11; tidak ada backfill dari approved_at. Data lama
+tetap null dan ditampilkan aman. Down migration menghapus metadata monitoring:
+jangan rollback tanpa backup. Tidak ada dependency atau konfigurasi storage baru.
+
 Panduan ini untuk operator dengan akses terminal terkontrol. Tidak ada deployment
 remote yang dilakukan dalam Phase 10. Sesuaikan hosting; jangan menjalankan test,
 composer setup, composer update, demo seeder atau migrate:fresh di production.

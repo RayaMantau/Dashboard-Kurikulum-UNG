@@ -14,7 +14,7 @@
             @include('university-admin.users.form')
             <div class="form-actions">
                 <button type="submit" class="primary-button action-button" data-pending-label="Menyimpan...">Simpan Perubahan</button>
-                <a href="{{ route('university-admin.users.index') }}">Kembali ke Pengguna</a>
+                <a class="primary-button action-button secondary-button" href="{{ route('university-admin.users.index') }}">Batal</a>
             </div>
         </form>
     </section>

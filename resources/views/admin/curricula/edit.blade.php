@@ -15,7 +15,7 @@
             @include('admin.curricula.form')
             <div class="form-actions">
                 <button type="submit" class="primary-button action-button" data-pending-label="Menyimpan...">Simpan Perubahan</button>
-                <a href="{{ route('admin.curricula.index') }}">Kembali ke Kurikulum</a>
+                <a class="primary-button action-button secondary-button" href="{{ route('admin.curricula.index') }}">Batal</a>
             </div>
         </form>
     </section>

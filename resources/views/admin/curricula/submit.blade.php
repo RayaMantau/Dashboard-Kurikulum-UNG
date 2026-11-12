@@ -47,6 +47,6 @@
         @else
             <p class="dashboard-muted">Lengkapi persyaratan di atas sebelum mengajukan kurikulum.</p>
         @endif
-        <p><a href="{{ route('admin.curricula.index') }}">Kembali ke Kurikulum</a></p>
+        <p><a class="primary-button action-button secondary-button" href="{{ route('admin.curricula.index') }}">Batal</a></p>
     </section>
 @endsection

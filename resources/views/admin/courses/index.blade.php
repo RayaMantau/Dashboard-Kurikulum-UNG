@@ -17,7 +17,6 @@
                 <input id="search" type="search" name="search" maxlength="255" value="{{ $filters['search'] ?? '' }}" placeholder="Kode atau nama mata kuliah">
             </div>
             <button type="submit" class="primary-button action-button">Cari</button>
-            <a href="{{ route('admin.courses.index') }}">Reset</a>
         </form>
         @if($courses->isEmpty())
             <div class="dashboard-empty">
@@ -35,7 +34,7 @@
                                 <td>{{ $course->code }}</td>
                                 <th scope="row">{{ $course->name }}</th>
                                 <td>{{ \Illuminate\Support\Str::limit($course->description ?? '-', 150) }}</td>
-                                <td><a href="{{ route('admin.courses.edit', $course) }}" aria-label="Edit {{ $course->name }}">Edit</a></td>
+                                <td><a class="primary-button action-button table-button secondary-button" href="{{ route('admin.courses.edit', $course) }}" aria-label="Edit {{ $course->name }}">Edit</a></td>
                             </tr>
                         @endforeach
                     </tbody>

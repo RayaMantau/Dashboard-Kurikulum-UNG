@@ -39,7 +39,6 @@
                 </select>
             </div>
             <button type="submit" class="primary-button action-button">Terapkan</button>
-            <a href="{{ route('university-admin.users.index') }}">Reset</a>
         </form>
         @if($users->isEmpty())
             <div class="dashboard-empty"><h2>Tidak ada pengguna yang sesuai dengan pencarian atau filter.</h2><p>Sesuaikan filter atau tambahkan pengguna internal.</p></div>
@@ -61,7 +60,7 @@
                                 } }}</td>
                                 <td><span class="status-badge {{ $user->is_active ? 'status-published' : 'status-archived' }}">{{ $user->is_active ? 'Aktif' : 'Tidak Aktif' }}</span></td>
                                 <td>{{ $user->last_login_at?->format('d/m/Y H:i') ?? 'Belum pernah masuk' }}</td>
-                                <td><a href="{{ route('university-admin.users.edit', $user) }}" aria-label="Edit {{ $user->name }}">Edit</a></td>
+                                <td><a class="primary-button action-button table-button secondary-button" href="{{ route('university-admin.users.edit', $user) }}" aria-label="Edit {{ $user->name }}">Edit</a></td>
                             </tr>
                         @endforeach
                     </tbody>

@@ -9,7 +9,7 @@
         <form method="POST" action="{{ route('admin.curricula.semesters.store', $curriculum) }}" data-pending-form>
             @csrf
             @include('admin.semesters.form')
-            <div class="form-actions"><button type="submit" class="primary-button action-button" data-pending-label="Menyimpan...">Simpan Semester</button><a href="{{ route('admin.curricula.semesters.index', $curriculum) }}">Batal</a></div>
+            <div class="form-actions"><button type="submit" class="primary-button action-button" data-pending-label="Menyimpan...">Simpan Semester</button><a class="primary-button action-button secondary-button" href="{{ route('admin.curricula.semesters.index', $curriculum) }}">Batal</a></div>
         </form>
     </section>
 @endsection

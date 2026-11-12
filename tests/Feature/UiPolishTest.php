@@ -19,6 +19,70 @@ class UiPolishTest extends TestCase
 {
     use RefreshDatabase;
 
+    private function assertStyledLink(string $html, string $label, string $url): void
+    {
+        $dom = new \DOMDocument;
+        @$dom->loadHTML($html);
+        $xpath = new \DOMXPath($dom);
+        $links = $xpath->query('//a[normalize-space(.)="'.$label.'" and @href="'.$url.'"]');
+        $this->assertGreaterThan(0, $links->length, $label.' must navigate to '.$url);
+        foreach ($links as $link) {
+            $this->assertStringContainsString('action-button', $link->getAttribute('class'));
+            $this->assertStringContainsString('secondary-button', $link->getAttribute('class'));
+        }
+    }
+
+    public function test_master_management_lists_and_forms_use_consistent_actions(): void
+    {
+        $program = StudyProgram::factory()->create();
+        $admin = User::factory()->create(['role' => UserRole::UNIVERSITY_ADMIN, 'is_active' => true]);
+        $this->actingAs($admin);
+        foreach (['faculties' => $program->faculty, 'study-programs' => $program, 'users' => $admin] as $area => $record) {
+            $prefix = 'university-admin.'.$area;
+            $index = route($prefix.'.index');
+            $response = $this->get($index)->assertOk()->assertDontSee('>Reset<', false);
+            $this->assertStyledLink($response->getContent(), 'Edit', route($prefix.'.edit', $record));
+            foreach (['create', 'edit'] as $action) {
+                $response = $this->get(route($prefix.'.'.$action, $action === 'edit' ? $record : []))->assertOk();
+                $this->assertStyledLink($response->getContent(), 'Batal', $index);
+                foreach (['Fakultas', 'Program Studi', 'Pengguna'] as $label) {
+                    $response->assertDontSee('Kembali ke '.$label);
+                }
+            }
+        }
+    }
+
+    public function test_prodi_management_forms_keep_cancel_destinations_and_styled_actions(): void
+    {
+        $program = StudyProgram::factory()->create();
+        $user = User::factory()->create(['role' => UserRole::STUDY_PROGRAM_ADMIN, 'is_active' => true, 'study_program_id' => $program->id]);
+        $curriculum = Curriculum::factory()->create(['study_program_id' => $program->id]);
+        $semester = Semester::factory()->create(['curriculum_id' => $curriculum->id]);
+        $course = Course::factory()->create(['study_program_id' => $program->id]);
+        $assignment = CurriculumCourse::factory()->create(['curriculum_id' => $curriculum->id, 'semester_id' => $semester->id, 'course_id' => $course->id]);
+        $this->actingAs($user);
+        foreach (['admin.courses' => $course, 'admin.curricula' => $curriculum] as $prefix => $record) {
+            $response = $this->get(route($prefix.'.index'))->assertOk()->assertDontSee('>Reset<', false);
+            $this->assertStyledLink($response->getContent(), 'Edit', route($prefix.'.edit', $record));
+            foreach (['create', 'edit'] as $action) {
+                $response = $this->get(route($prefix.'.'.$action, $action === 'edit' ? $record : []))->assertOk();
+                $this->assertStyledLink($response->getContent(), 'Batal', route($prefix.'.index'));
+                $response->assertDontSee('Kembali ke Kurikulum')->assertDontSee('Kembali ke Mata Kuliah');
+            }
+        }
+        foreach (['semesters' => $semester, 'courses' => $assignment] as $area => $record) {
+            foreach (['create', 'edit'] as $action) {
+                $params = $action === 'edit' ? [$curriculum, $record] : [$curriculum];
+                $params['semester'] = $semester->id;
+                $response = $this->get(route('admin.curricula.'.$area.'.'.$action, $params))->assertOk();
+                $indexParams = $area === 'courses' ? [$curriculum, 'semester' => $semester->id] : [$curriculum];
+                $this->assertStyledLink($response->getContent(), 'Batal', route('admin.curricula.'.$area.'.index', $indexParams));
+            }
+        }
+        $response = $this->get(route('admin.curricula.documents.create', $curriculum))->assertOk();
+        $this->assertStyledLink($response->getContent(), 'Batal', route('admin.curricula.documents.index', $curriculum));
+    }
+
     public function test_public_login_and_internal_layouts_load_shared_brand_before_surface_styles(): void
     {
         foreach (['home', 'login'] as $route) {

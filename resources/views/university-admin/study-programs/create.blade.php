@@ -13,7 +13,7 @@
             @include('university-admin.study-programs.form')
             <div class="form-actions">
                 <button type="submit" class="primary-button action-button" data-pending-label="Menyimpan...">Simpan Program Studi</button>
-                <a href="{{ route('university-admin.study-programs.index') }}">Batal</a>
+                <a class="primary-button action-button secondary-button" href="{{ route('university-admin.study-programs.index') }}">Batal</a>
             </div>
         </form>
     </section>

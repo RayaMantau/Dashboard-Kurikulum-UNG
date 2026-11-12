@@ -25,7 +25,6 @@
                 </select>
             </div>
             <button type="submit" class="primary-button action-button">Terapkan</button>
-            <a href="{{ route('university-admin.faculties.index') }}">Reset</a>
         </form>
         @if($faculties->isEmpty())
             <div class="dashboard-empty">
@@ -44,7 +43,7 @@
                                 <td>{{ $faculty->code }}</td>
                                 <td>{{ $faculty->study_programs_count }}</td>
                                 <td><span class="status-badge {{ $faculty->is_active ? 'status-published' : 'status-archived' }}">{{ $faculty->is_active ? 'Aktif' : 'Tidak Aktif' }}</span></td>
-                                <td><a href="{{ route('university-admin.faculties.edit', $faculty) }}" aria-label="Edit {{ $faculty->name }}">Edit</a></td>
+                                <td><a class="primary-button action-button table-button secondary-button" href="{{ route('university-admin.faculties.edit', $faculty) }}" aria-label="Edit {{ $faculty->name }}">Edit</a></td>
                             </tr>
                         @endforeach
                     </tbody>

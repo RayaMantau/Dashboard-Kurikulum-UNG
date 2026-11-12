@@ -28,7 +28,7 @@
             </div>
             <div class="form-actions">
                 <button type="submit" class="primary-button action-button" data-pending-label="Mengunggah...">Unggah Dokumen</button>
-                <a href="{{ route('admin.curricula.documents.index', $curriculum) }}">Batal</a>
+                <a class="primary-button action-button secondary-button" href="{{ route('admin.curricula.documents.index', $curriculum) }}">Batal</a>
             </div>
         </form>
     </section>

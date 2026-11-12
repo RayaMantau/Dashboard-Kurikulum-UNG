@@ -88,5 +88,5 @@
             </form>
         </section>
     @endcan
-    <p><a href="{{ route('kaprodi.submissions.index') }}">Kembali ke Pengajuan</a></p>
+    <p><a class="primary-button action-button secondary-button" href="{{ route('kaprodi.submissions.index') }}">Batal</a></p>
 @endsection

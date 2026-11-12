@@ -34,5 +34,5 @@
             <button type="submit" class="primary-button action-button" data-pending-label="Mempublikasikan...">Publikasikan Kurikulum</button>
         </form>
     </section>
-    <p><a href="{{ route('kaprodi.submissions.approved') }}">Batal dan kembali ke daftar publikasi</a></p>
+    <p><a class="primary-button action-button secondary-button" href="{{ route('kaprodi.submissions.approved') }}">Batal</a></p>
 @endsection

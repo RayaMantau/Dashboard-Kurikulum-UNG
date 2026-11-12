@@ -10,7 +10,7 @@
         <form method="POST" action="{{ route('admin.curricula.courses.update', [$curriculum, $assignment, 'semester' => $selectedSemester?->id]) }}" data-pending-form>
             @csrf @method('PUT')
             @include('admin.curriculum-courses.form')
-            <div class="form-actions"><button type="submit" class="primary-button action-button" data-pending-label="Menyimpan...">Simpan Perubahan</button><a href="{{ route('admin.curricula.courses.index', [$curriculum, 'semester' => $selectedSemester?->id]) }}">Batal</a></div>
+            <div class="form-actions"><button type="submit" class="primary-button action-button" data-pending-label="Menyimpan...">Simpan Perubahan</button><a class="primary-button action-button secondary-button" href="{{ route('admin.curricula.courses.index', [$curriculum, 'semester' => $selectedSemester?->id]) }}">Batal</a></div>
         </form>
     </section>
 @endsection

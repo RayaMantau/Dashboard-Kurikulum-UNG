@@ -5,17 +5,11 @@
         <div class="public-container hero-grid">
             <div class="hero-copy">
                 <p class="public-eyebrow"><span aria-hidden="true"></span> PORTAL INFORMASI AKADEMIK</p>
-                <h1 id="hero-title">Dashboard Kurikulum <span>Universitas Negeri Gorontalo</span></h1>
+                <h1 id="hero-title">SIMKUR UNG <span>Sistem Informasi Manajemen Kurikulum</span></h1>
                 <p class="hero-description">Temukan informasi kurikulum, struktur semester, dan mata kuliah dari Program Studi di Universitas Negeri Gorontalo.</p>
-                <div class="hero-actions">
-                    <a class="public-button" href="{{ route('faculties.index') }}">Jelajahi Fakultas <span aria-hidden="true">&rarr;</span></a>
-                    <span>Terbuka untuk semua.<br>Tanpa perlu akun.</span>
-                </div>
-                <p class="hero-note"><a href="{{ route('search') }}">Cari mata kuliah dalam kurikulum aktif dan arsip.</a></p>
-                <p class="hero-note"><a href="{{ route('monitoring.index') }}">Monitoring Kurikulum dan jadwal Monev Program Studi.</a></p>
             </div>
             <div class="hero-art" aria-hidden="true">
-                <div class="art-heading"><span>KURIKULUM UNG</span><span>AKADEMIK</span></div>
+                <div class="art-heading"><span>SIMKUR UNG</span><span>AKADEMIK</span></div>
                 <svg viewBox="0 0 400 270" fill="none">
                     <path d="M52 218L200 262L348 218L200 174Z" fill="var(--color-primary-border)"/>
                     <path d="M72 178L199 218L328 178L200 139Z" fill="var(--color-primary-soft)" stroke="var(--color-primary-border)" stroke-width="2"/>

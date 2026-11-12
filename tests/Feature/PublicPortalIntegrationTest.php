@@ -97,7 +97,7 @@ class PublicPortalIntegrationTest extends TestCase
 
                 continue;
             }
-            $response->assertSee(' | Dashboard Kurikulum UNG</title>', false)->assertSee('class="public-portal"', false)
+            $response->assertSee(' | SIMKUR UNG</title>', false)->assertSee('class="public-portal"', false)
                 ->assertSee('id="main"', false)->assertSee('Masuk')->assertDontSee('Segera')->assertDontSee('href="#"', false)
                 ->assertDontSee('SECRET-')->assertDontSee($document->file_path)->assertDontSee('/storage/');
             foreach ($links[$name] ?? [] as $target) {

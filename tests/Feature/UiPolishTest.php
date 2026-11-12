@@ -19,6 +19,43 @@ class UiPolishTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_official_logo_is_available_on_public_login_and_internal_branding(): void
+    {
+        $path = public_path('images/ung-logo.png');
+        $this->assertFileExists($path);
+        $this->assertSame('image/png', getimagesize($path)['mime']);
+        foreach (['home', 'login', 'dashboard'] as $page) {
+            if ($page === 'dashboard') {
+                $this->actingAs(User::factory()->create(['is_active' => true, 'role' => UserRole::UNIVERSITY_ADMIN]));
+            }
+            $response = $this->get(route($page))->assertOk()->assertSee('SIMKUR UNG');
+            $dom = new \DOMDocument;
+            @$dom->loadHTML($response->getContent());
+            $xpath = new \DOMXPath($dom);
+            $logos = $xpath->query('//img[@src="'.asset('images/ung-logo.png').'" and @alt="Logo Universitas Negeri Gorontalo"]');
+            $this->assertSame(1, $logos->length);
+            $this->assertSame($page === 'dashboard' ? '40' : '48', $logos->item(0)->getAttribute('width'));
+        }
+    }
+
+    public function test_public_branding_and_cleanup_preserve_navigation_and_login(): void
+    {
+        $response = $this->get(route('home'))->assertOk()->assertSee('SIMKUR UNG')
+            ->assertDontSee('menu-toggle')->assertDontSee('Jelajahi Fakultas')
+            ->assertDontSee('Terbuka untuk semua.')->assertDontSee('Tanpa perlu akun.')
+            ->assertDontSee('Cari mata kuliah dalam kurikulum aktif dan arsip.')
+            ->assertDontSee('Monitoring Kurikulum dan jadwal Monev Program Studi.');
+        $dom = new \DOMDocument;
+        @$dom->loadHTML($response->getContent());
+        $xpath = new \DOMXPath($dom);
+        $this->assertSame(0, $xpath->query('//footer//a[normalize-space(.)="Beranda"]')->length);
+        foreach (['home', 'faculties.index', 'study-programs.index', 'search', 'monitoring.index', 'login'] as $name) {
+            $this->assertSame(1, $xpath->query('//nav[@id="public-navigation"]//a[@href="'.route($name).'"]')->length);
+        }
+        $this->get(route('login'))->assertOk()->assertSee('SIMKUR UNG')->assertDontSee('>Beranda</a>', false)
+            ->assertSee('name="email"', false)->assertSee('name="password"', false)->assertSee('name="_token"', false);
+    }
+
     private function assertStyledLink(string $html, string $label, string $url): void
     {
         $dom = new \DOMDocument;

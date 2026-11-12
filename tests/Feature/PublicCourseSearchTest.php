@@ -50,11 +50,11 @@ class PublicCourseSearchTest extends TestCase
 
     public function test_navigation_homepage_and_authenticated_access(): void
     {
-        $this->get(route('search'))->assertOk()->assertSee('Cari Mata Kuliah | Dashboard Kurikulum UNG')
+        $this->get(route('search'))->assertOk()->assertSee('Cari Mata Kuliah | SIMKUR UNG')
             ->assertSee('href="'.route('search').'"  aria-current="page"', false)
             ->assertSee('method="GET"', false)->assertSee('Reset Filter')->assertDontSee('Segera');
         $this->get(route('home'))->assertOk()->assertSee('href="'.route('search').'"', false)
-            ->assertSee('Cari mata kuliah dalam kurikulum aktif dan arsip.')->assertDontSee('segera tersedia');
+            ->assertDontSee('Cari mata kuliah dalam kurikulum aktif dan arsip.')->assertDontSee('segera tersedia');
         foreach (UserRole::cases() as $role) {
             $this->actingAs(User::factory()->create(['role' => $role]));
             $this->get(route('search'))->assertOk()->assertSee('Dashboard Internal');

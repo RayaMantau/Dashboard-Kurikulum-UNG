@@ -62,7 +62,7 @@ class PublicFacultyTest extends TestCase
             ->assertSeeInOrder(['Alpha Prodi', 'Zeta Prodi'])->assertSee('Jenjang: S1')->assertSee('Akreditasi: Unggul')
             ->assertSee('2 Program Studi aktif')->assertDontSee('SecretInactiveProgram')->assertDontSee('SecretOtherFacultyProgram')
             ->assertSee('href="'.route('study-programs.index').'"', false)->assertSee('aria-label="Breadcrumb"', false)
-            ->assertSee('<title>'.$faculty->name.' | Dashboard Kurikulum UNG</title>', false);
+            ->assertSee('<title>'.$faculty->name.' | SIMKUR UNG</title>', false);
         $this->assertSame(['Alpha Prodi', 'Zeta Prodi'], $response->viewData('studyPrograms')->pluck('name')->all());
     }
 
@@ -119,7 +119,7 @@ class PublicFacultyTest extends TestCase
     {
         $faculty = Faculty::factory()->create();
         $hidden = Faculty::factory()->create(['is_active' => false]);
-        $response = $this->get(route('home'))->assertOk()->assertSee('Jelajahi Fakultas')
+        $response = $this->get(route('home'))->assertOk()->assertDontSee('Jelajahi Fakultas')
             ->assertSee('href="'.route('faculties.index').'"', false)
             ->assertSee('href="'.route('faculties.show', $faculty->slug).'"', false)
             ->assertDontSee('href="'.route('faculties.show', $hidden->slug).'"', false)

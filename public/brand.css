@@ -27,3 +27,8 @@
 .monitoring-upcoming { color: var(--color-info); background: var(--color-info-soft); }
 .monitoring-minor { color: var(--color-warning); background: var(--color-warning-soft); }
 .monitoring-reconstruction { color: var(--color-danger); background: var(--color-danger-soft); }
+
+.ung-logo { display: block; width: 48px; height: 48px; object-fit: contain; flex-shrink: 0; }
+.sidebar-brand .ung-logo { width: 40px; height: 40px; }
+.portal-brand { display: inline-flex; align-items: center; gap: 12px; }
+.portal-brand small { display: block; font-size: 12px; font-weight: 400; margin-top: 4px; }

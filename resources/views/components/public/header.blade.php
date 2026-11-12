@@ -1,13 +1,9 @@
 <header class="public-header">
     <div class="public-container header-inner">
-        <a class="public-brand" href="{{ route('home') }}" aria-label="Dashboard Kurikulum UNG, beranda">
-            <span class="public-mark" aria-hidden="true">U</span>
-            <span>Kurikulum UNG<small>Universitas Negeri Gorontalo</small></span>
+        <a class="public-brand" href="{{ route('home') }}" aria-label="SIMKUR UNG, beranda">
+            <img class="ung-logo" src="{{ asset('images/ung-logo.png') }}" alt="Logo Universitas Negeri Gorontalo" width="48" height="48">
+            <span>SIMKUR UNG<small>Sistem Informasi Manajemen Kurikulum</small></span>
         </a>
-        <button class="menu-toggle" type="button" aria-controls="public-navigation" aria-expanded="false" hidden>
-            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-            Menu
-        </button>
         <nav id="public-navigation" aria-label="Navigasi publik">
             <ul>
                 <li><a href="{{ route('home') }}" @if(request()->routeIs('home')) aria-current="page" @endif>Beranda</a></li>

@@ -2,7 +2,7 @@
 
 <aside id="internal-sidebar" class="shell-sidebar" aria-label="Navigasi aplikasi" tabindex="-1">
     <div class="sidebar-brand">
-        <a href="{{ route('dashboard') }}"><span class="brand-mark" aria-hidden="true">U</span><span>Kurikulum UNG<small>PORTAL AKADEMIK</small></span></a>
+        <a href="{{ route('dashboard') }}"><img class="ung-logo" src="{{ asset('images/ung-logo.png') }}" alt="Logo Universitas Negeri Gorontalo" width="40" height="40"><span>SIMKUR UNG<small>PORTAL AKADEMIK</small></span></a>
         <button type="button" class="icon-button sidebar-close" data-sidebar-close aria-label="Tutup navigasi">&times;</button>
     </div>
     <div class="sidebar-scope">
@@ -40,6 +40,6 @@
         </ul>
     </nav>
     <div class="sidebar-bottom">
-        <p>Dashboard Kurikulum UNG</p>
+        <p>SIMKUR UNG</p>
     </div>
 </aside>

@@ -6,17 +6,13 @@
     </button>
     <span class="topbar-context">{{ $title }}</span>
     <div class="topbar-actions">
-        <details class="shell-popover notification-popover">
-            <summary class="icon-button" aria-label="Notifikasi: {{ $unreadCount }} belum dibaca">
+        <div class="notification-popover">
+            <a href="{{ route('notifications.index') }}" class="icon-button" aria-label="Notifikasi: {{ $unreadCount }} belum dibaca">
                 <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
                 @if($unreadCount > 0)<span class="notification-count" aria-hidden="true">{{ $unreadCount > 99 ? '99+' : $unreadCount }}</span>@endif
-            </summary>
-            <div class="popover-panel">
-                <strong>Notifikasi</strong>
-                <p>{{ $unreadCount === 0 ? 'Tidak ada notifikasi yang belum dibaca.' : $unreadCount.' notifikasi belum dibaca.' }}</p>
-                <p class="muted">Pusat notifikasi akan tersedia pada tahap berikutnya.</p>
-            </div>
-        </details>
+                <span class="sr-only">{{ $unreadCount === 0 ? 'Tidak ada notifikasi yang belum dibaca.' : $unreadCount.' notifikasi belum dibaca.' }}</span>
+            </a>
+        </div>
         <details class="shell-popover account-popover">
             <summary class="account-summary" aria-label="Akun {{ $user->name }}">
                 <span class="user-avatar" aria-hidden="true">{{ mb_strtoupper(mb_substr($user->name, 0, 1)) }}</span>

@@ -12,6 +12,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Kaprodi\CurriculumPublicationController;
 use App\Http\Controllers\Kaprodi\CurriculumReviewController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PublicCurriculumController;
 use App\Http\Controllers\PublicCurriculumMonitoringController;
 use App\Http\Controllers\PublicFacultyController;
@@ -51,6 +52,9 @@ Route::middleware('auth:web')->group(function (): void {
 });
 
 Route::middleware(['auth:web', 'can:access-internal-dashboard'])->group(function (): void {
+    Route::get('/internal/notifikasi', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/internal/notifikasi/read-all', [NotificationController::class, 'readAll'])->name('notifications.read-all');
+    Route::post('/internal/notifikasi/{notification}/read', [NotificationController::class, 'read'])->whereNumber('notification')->name('notifications.read');
     Route::get('/internal/kurikulum/{curriculum}/riwayat', CurriculumHistoryController::class)->can('view', 'curriculum')->name('internal.curricula.history');
     Route::prefix('university-admin')->name('university-admin.')->middleware('can:access-role,"university_admin"')->group(function (): void {
         Route::get('/pengguna', [UserController::class, 'index'])->can('viewAny', User::class)->name('users.index');

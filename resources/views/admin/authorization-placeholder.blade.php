@@ -2,8 +2,8 @@
 
 @php
     $area = match (true) {
-        request()->routeIs('university-admin.*') => ['label' => 'Administrasi Universitas', 'url' => route('university-admin.dashboard')],
-        request()->routeIs('faculty-admin.*') => ['label' => 'Monitoring Fakultas', 'url' => route('faculty-admin.dashboard')],
+        request()->routeIs('university-admin.*') => ['label' => 'Monitoring Kurikulum', 'url' => route('university-admin.monitoring.index')],
+        request()->routeIs('faculty-admin.*') => ['label' => 'Monitoring Kurikulum', 'url' => route('faculty-admin.monitoring.index')],
         request()->routeIs('kaprodi.*') => ['label' => 'Review Kurikulum', 'url' => route('kaprodi.dashboard')],
         default => ['label' => 'Kurikulum', 'url' => route('admin.curricula.index')],
     };

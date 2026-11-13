@@ -20,8 +20,8 @@ class InternalShellTest extends TestCase
     public static function roles(): array
     {
         return [
-            'university' => [UserRole::UNIVERSITY_ADMIN, 'Admin Universitas', 'university-admin.dashboard'],
-            'faculty' => [UserRole::FACULTY_ADMIN, 'Admin Fakultas', 'faculty-admin.dashboard'],
+            'university' => [UserRole::UNIVERSITY_ADMIN, 'Admin Universitas', 'university-admin.monitoring.index'],
+            'faculty' => [UserRole::FACULTY_ADMIN, 'Admin Fakultas', 'faculty-admin.monitoring.index'],
             'prodi' => [UserRole::STUDY_PROGRAM_ADMIN, 'Admin Program Studi', 'admin.curricula.index'],
             'head' => [UserRole::HEAD_OF_STUDY_PROGRAM, 'Ketua Program Studi', 'kaprodi.submissions.index'],
         ];
@@ -70,6 +70,45 @@ class InternalShellTest extends TestCase
             ->assertDontSee('id="internal-sidebar"', false);
     }
 
+    public function test_admin_sidebars_only_link_to_current_production_areas(): void
+    {
+        $program = StudyProgram::factory()->create();
+        foreach ([UserRole::FACULTY_ADMIN, UserRole::UNIVERSITY_ADMIN] as $role) {
+            $user = User::factory()->create(['role' => $role, 'is_active' => true, 'faculty_id' => $program->faculty_id]);
+            $routes = $role === UserRole::FACULTY_ADMIN
+                ? ['dashboard', 'faculty-admin.monitoring.index']
+                : ['dashboard', 'university-admin.monitoring.index', 'university-admin.faculties.index', 'university-admin.study-programs.index', 'university-admin.users.index'];
+            $response = $this->actingAs($user)->get(route($routes[1]))->assertOk()
+                ->assertDontSee('Monitoring Fakultas')->assertDontSee('Administrasi Universitas');
+            $dom = new \DOMDocument;
+            @$dom->loadHTML($response->getContent());
+            $xpath = new \DOMXPath($dom);
+            $links = $xpath->query('//ul[@class="sidebar-menu"]/li/a');
+            $this->assertSame(array_map(fn (string $name): string => route($name), $routes), array_map(fn ($link) => $link->getAttribute('href'), iterator_to_array($links)));
+            $active = $xpath->query('//ul[@class="sidebar-menu"]//a[@aria-current="page"]');
+            $this->assertSame(1, $active->length);
+            $this->assertSame(route($routes[1]), $active->item(0)->getAttribute('href'));
+        }
+    }
+
+    public function test_removed_landing_routes_are_absent_and_resource_breadcrumbs_remain_valid(): void
+    {
+        foreach (['university-admin', 'faculty-admin'] as $prefix) {
+            $this->assertFalse(Route::has($prefix.'.dashboard'));
+            $this->get('/'.$prefix)->assertNotFound();
+            $this->assertTrue(Route::has($prefix.'.curricula.show'));
+        }
+        $program = StudyProgram::factory()->create();
+        $curriculum = Curriculum::factory()->create(['study_program_id' => $program->id]);
+        foreach (['university-admin' => UserRole::UNIVERSITY_ADMIN, 'faculty-admin' => UserRole::FACULTY_ADMIN] as $prefix => $role) {
+            $user = User::factory()->create(['role' => $role, 'is_active' => true, 'faculty_id' => $program->faculty_id]);
+            $this->actingAs($user)->get('/'.$prefix)->assertNotFound();
+            $this->get(route($prefix.'.curricula.show', $curriculum))->assertOk()
+                ->assertSee('href="'.route($prefix.'.monitoring.index').'"', false)
+                ->assertDontSee('Administrasi Universitas')->assertDontSee('Monitoring Fakultas');
+        }
+    }
+
     #[DataProvider('roles')]
     public function test_missing_optional_scope_relationships_render_gracefully(UserRole $role, string $label, string $area): void
     {
@@ -81,7 +120,7 @@ class InternalShellTest extends TestCase
         };
 
         $this->actingAs($user);
-        if (in_array($role, [UserRole::STUDY_PROGRAM_ADMIN, UserRole::HEAD_OF_STUDY_PROGRAM], true)) {
+        if ($role !== UserRole::UNIVERSITY_ADMIN) {
             $this->get(route($area))->assertForbidden();
             $this->get(route('dashboard'))->assertOk()->assertSee($expected);
         } else {

@@ -33,8 +33,8 @@ class InternalAuthorizationTest extends TestCase
     private function areas(): array
     {
         return [
-            'university-admin.dashboard' => UserRole::UNIVERSITY_ADMIN,
-            'faculty-admin.dashboard' => UserRole::FACULTY_ADMIN,
+            'university-admin.monitoring.index' => UserRole::UNIVERSITY_ADMIN,
+            'faculty-admin.monitoring.index' => UserRole::FACULTY_ADMIN,
             'admin.curricula.index' => UserRole::STUDY_PROGRAM_ADMIN,
             'kaprodi.dashboard' => UserRole::HEAD_OF_STUDY_PROGRAM,
         ];
@@ -94,7 +94,7 @@ class InternalAuthorizationTest extends TestCase
         DB::table('users')->where('id', $user->id)->update(['role' => 'student']);
 
         $this->actingAs($user->fresh())->get(route('dashboard'))->assertForbidden();
-        $this->get(route('university-admin.dashboard'))->assertForbidden();
+        $this->get(route('university-admin.monitoring.index'))->assertForbidden();
     }
 
     public function test_faculty_monitoring_uses_bound_resource_scope_not_submitted_ids(): void
@@ -192,7 +192,7 @@ class InternalAuthorizationTest extends TestCase
     {
         config(['app.debug' => true]);
         $this->actingAs($this->userFor(UserRole::FACULTY_ADMIN))
-            ->get(route('university-admin.dashboard'))
+            ->get(route('university-admin.monitoring.index'))
             ->assertForbidden()->assertSee('Akses ditolak')
             ->assertDontSee('AuthorizationException')->assertDontSee('access-role');
     }

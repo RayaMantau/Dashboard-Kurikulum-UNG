@@ -74,7 +74,6 @@ Route::middleware(['auth:web', 'can:access-internal-dashboard'])->group(function
         Route::post('/fakultas', [FacultyController::class, 'store'])->can('create', Faculty::class)->name('faculties.store');
         Route::get('/fakultas/{faculty}/edit', [FacultyController::class, 'edit'])->can('update', 'faculty')->name('faculties.edit');
         Route::match(['put', 'patch'], '/fakultas/{faculty}', [FacultyController::class, 'update'])->can('update', 'faculty')->name('faculties.update');
-        Route::view('/', 'admin.authorization-placeholder', ['title' => 'Administrasi Universitas'])->name('dashboard');
         Route::get('/kurikulum/{curriculum}', function (Curriculum $curriculum): View {
             return view('admin.authorization-placeholder', ['title' => 'Monitoring Kurikulum', 'resourceName' => $curriculum->name]);
         })->can('view', 'curriculum')->name('curricula.show');
@@ -82,7 +81,6 @@ Route::middleware(['auth:web', 'can:access-internal-dashboard'])->group(function
 
     Route::prefix('faculty-admin')->name('faculty-admin.')->middleware('can:access-role,"faculty_admin"')->group(function (): void {
         Route::get('/monitoring-kurikulum', InternalCurriculumMonitoringController::class)->name('monitoring.index');
-        Route::view('/', 'admin.authorization-placeholder', ['title' => 'Monitoring Fakultas'])->name('dashboard');
         Route::get('/program-studi/{studyProgram}', function (StudyProgram $studyProgram): View {
             return view('admin.authorization-placeholder', ['title' => 'Monitoring Program Studi', 'resourceName' => $studyProgram->name]);
         })->can('view', 'studyProgram')->name('study-programs.show');

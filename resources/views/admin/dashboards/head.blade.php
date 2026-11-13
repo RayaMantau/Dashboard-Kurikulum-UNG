@@ -1,5 +1,5 @@
 @if(!$missingScope)
-    <p><a href="{{ route('kaprodi.submissions.approved') }}">Menunggu publikasi: {{ $metrics['Disetujui'] }} kurikulum</a></p>
+    <p><a class="primary-button action-button secondary-button" href="{{ route('kaprodi.submissions.approved') }}">Menunggu publikasi: {{ $metrics['Disetujui'] }} kurikulum</a></p>
 @endif
 <section class="portal-card dashboard-section">
     <h2>Kurikulum Aktif</h2>
@@ -14,13 +14,13 @@
 <div class="dashboard-columns">
     <section class="portal-card dashboard-section">
         <h2>Menunggu Review</h2>
-        @if(!$missingScope)<p><a href="{{ route('kaprodi.submissions.index') }}">Lihat semua pengajuan</a></p>@endif
+        @if(!$missingScope)<p><a class="primary-button action-button secondary-button" href="{{ route('kaprodi.submissions.index') }}">Lihat semua pengajuan</a></p>@endif
         <p class="dashboard-muted">Maksimal 10 pengajuan, dimulai dari yang paling lama menunggu.</p>
         <ul class="dashboard-records">
             @forelse($content['queue'] as $curriculum)
                 <li>
                     <strong>{{ $curriculum->name }}</strong>
-                    <p><a href="{{ route('kaprodi.submissions.show', $curriculum) }}">Review Kurikulum</a></p>
+                    <p><a class="primary-button action-button" href="{{ route('kaprodi.submissions.show', $curriculum) }}">Review Kurikulum</a></p>
                     <p><x-internal.status-badge :status="$curriculum->status" /></p>
                     <p>Diajukan: {{ $curriculum->submitted_at?->format('d/m/Y H:i') ?? 'Waktu pengajuan belum tercatat' }}</p>
                 </li>

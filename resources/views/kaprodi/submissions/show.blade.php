@@ -8,19 +8,25 @@
         <h1>Review Pengajuan Kurikulum</h1>
         <p>Program Studi {{ $curriculum->studyProgram->name }}</p>
         <h2>{{ $curriculum->name }}</h2>
-        <p><a href="{{ route('internal.curricula.history', $curriculum) }}">Riwayat Kurikulum</a></p>
+        <p><a class="primary-button action-button secondary-button" href="{{ route('internal.curricula.history', $curriculum) }}">Riwayat Kurikulum</a></p>
         <x-internal.status-badge :status="$curriculum->status" />
     </header>
     <section class="portal-card dashboard-section">
         <h2>Informasi Kurikulum</h2>
-        <dl>
-            <dt>Tahun</dt><dd>{{ $curriculum->year }}</dd>
-            <dt>Tahun Berlaku</dt><dd>{{ $curriculum->effective_year ?? '-' }}</dd>
-            <dt>Total SKS</dt><dd>{{ number_format((float) $curriculum->total_sks, 2, ',', '.') }}</dd>
-            <dt>Jumlah Semester</dt><dd>{{ $curriculum->total_semesters }}</dd>
-            <dt>Diajukan</dt><dd>{{ $curriculum->submitted_at?->format('d/m/Y H:i') ?? 'Waktu pengajuan belum tercatat' }}</dd>
-        </dl>
-        @if($curriculum->description)<p>{{ $curriculum->description }}</p>@endif
+        <div class="dashboard-table-wrap" role="region" aria-label="Informasi Kurikulum" tabindex="0">
+            <table class="dashboard-table review-information">
+                <caption class="sr-only">Informasi Kurikulum {{ $curriculum->name }}</caption>
+                <thead><tr><th scope="col">Label</th><th scope="col">Nilai</th></tr></thead>
+                <tbody>
+                    <tr><th scope="row">Tahun</th><td>{{ $curriculum->year }}</td></tr>
+                    <tr><th scope="row">Tahun Berlaku</th><td>{{ $curriculum->effective_year ?? '-' }}</td></tr>
+                    <tr><th scope="row">Total SKS</th><td>{{ number_format((float) $curriculum->total_sks, 2, ',', '.') }}</td></tr>
+                    <tr><th scope="row">Jumlah Semester</th><td>{{ $curriculum->total_semesters }}</td></tr>
+                    <tr><th scope="row">Diajukan</th><td>{{ $curriculum->submitted_at?->format('d/m/Y H:i') ?? 'Waktu pengajuan belum tercatat' }}</td></tr>
+                    @if($curriculum->description)<tr><th scope="row">Deskripsi</th><td>{{ $curriculum->description }}</td></tr>@endif
+                </tbody>
+            </table>
+        </div>
     </section>
     @forelse($curriculum->semesters as $semester)
         <section class="portal-card dashboard-section">
@@ -58,7 +64,7 @@
                     <p>{{ $document->file_name }} &middot; {{ $document->file_type }}</p>
                     <p>{{ $document->file_size === null ? 'Ukuran belum tercatat' : number_format($document->file_size / 1024, 2, ',', '.').' KB' }}
                         &middot; {{ $document->created_at?->format('d/m/Y H:i') ?? '-' }}</p>
-                    <a href="{{ route('kaprodi.submissions.documents.download', [$curriculum, $document]) }}">Unduh</a>
+                    <a class="primary-button action-button secondary-button" href="{{ route('kaprodi.submissions.documents.download', [$curriculum, $document]) }}">Unduh</a>
                 </li>
             @empty
                 <li class="dashboard-empty">Belum ada dokumen pada kurikulum ini.</li>
@@ -68,25 +74,28 @@
     @can('review', $curriculum)
         <section class="portal-card dashboard-section">
             <h2>Keputusan Review</h2>
-            <details>
-                <summary>Setujui Kurikulum</summary>
-                <p>Setujui kurikulum ini? Kurikulum akan berstatus Disetujui dan menunggu proses publikasi.</p>
-                <form method="POST" action="{{ route('kaprodi.submissions.approve', $curriculum) }}" data-pending-form>
-                    @csrf
-                    <button type="submit" class="primary-button action-button success-button" data-pending-label="Menyetujui...">Konfirmasi Persetujuan</button>
-                </form>
-            </details>
+            <h3>Konfirmasi Persetujuan</h3>
+            <form id="approve-curriculum" method="POST" action="{{ route('kaprodi.submissions.approve', $curriculum) }}" data-pending-form>
+                @csrf
+                <p>Kurikulum yang disetujui akan menunggu proses publikasi.</p>
+                <label class="checkbox-label"><input type="checkbox" required> Saya telah meninjau dan menyetujui kurikulum ini.</label>
+            </form>
             <h3>Minta Revisi</h3>
-            <form method="POST" action="{{ route('kaprodi.submissions.revision', $curriculum) }}" data-pending-form>
+            <form id="revise-curriculum" method="POST" action="{{ route('kaprodi.submissions.revision', $curriculum) }}" data-pending-form>
                 @csrf
                 <div class="form-field">
                     <label for="notes">Catatan Revisi <span>(wajib)</span></label>
                     <textarea id="notes" name="notes" rows="5" required maxlength="10000" aria-invalid="{{ $errors->has('notes') ? 'true' : 'false' }}" @error('notes') aria-describedby="notes-error" @enderror>{{ is_string(old('notes')) ? old('notes') : '' }}</textarea>
                     @error('notes')<p id="notes-error" class="field-error" role="alert">{{ $message }}</p>@enderror
                 </div>
-                <button type="submit" class="primary-button action-button warning-button" data-pending-label="Mengirim...">Minta Revisi</button>
             </form>
         </section>
     @endcan
-    <p><a class="primary-button action-button secondary-button" href="{{ route('kaprodi.submissions.index') }}">Batal</a></p>
+    <div class="review-actions" role="group" aria-label="Tindakan review kurikulum">
+        @can('review', $curriculum)
+            <button type="submit" form="approve-curriculum" class="primary-button action-button success-button" data-pending-label="Menyetujui...">Setujui Kurikulum</button>
+            <button type="submit" form="revise-curriculum" class="primary-button action-button warning-button" data-pending-label="Mengirim...">Minta Revisi</button>
+        @endcan
+        <a class="primary-button action-button secondary-button" href="{{ route('kaprodi.submissions.index') }}">Batal</a>
+    </div>
 @endsection

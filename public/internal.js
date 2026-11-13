@@ -1,5 +1,5 @@
 document.querySelectorAll('[data-pending-form]').forEach((form) => {
-    const button = form.querySelector('[data-pending-label]');
+    const button = [...form.elements].find((control) => control.matches('[data-pending-label]'));
     if (!button) return;
     const originalLabel = button.textContent;
     form.addEventListener('submit', () => {

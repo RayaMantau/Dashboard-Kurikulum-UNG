@@ -200,6 +200,10 @@
 .study-program-table { min-width: 850px; }
 .user-table { min-width: 920px; }
 .course-table { min-width: 640px; }
+.review-information { min-width: 0; }
+.review-information th:first-child { width: 35%; }
+.review-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-block: 24px; }
+.review-actions .action-button { min-height: 48px; }
 
 /* Shared interaction and long-content polish */
 .primary-button { color: var(--color-on-primary); max-width: 100%; white-space: normal; overflow-wrap: anywhere; }

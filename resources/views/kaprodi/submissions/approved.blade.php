@@ -8,7 +8,7 @@
         <h1>Publikasi Kurikulum</h1>
         <p>Program Studi {{ $studyProgram->name }}</p>
         <p>Kurikulum yang telah disetujui dan menunggu publikasi.</p>
-        <p><a href="{{ route('kaprodi.submissions.index') }}">Kembali ke antrean review</a></p>
+        <p><a class="primary-button action-button secondary-button" href="{{ route('kaprodi.submissions.index') }}">Kembali ke antrean review</a></p>
     </header>
     <section class="portal-card">
         @if($curricula->isEmpty())
@@ -25,7 +25,7 @@
                                 <td>{{ $curriculum->approved_at?->format('d/m/Y H:i') ?? 'Waktu persetujuan belum tercatat' }}</td>
                                 <td>{{ number_format((float) $curriculum->total_sks, 2, ',', '.') }}</td>
                                 <td>{{ $curriculum->total_semesters }}</td>
-                                <td><a href="{{ route('kaprodi.submissions.publish.confirm', $curriculum) }}">Publikasikan</a> <a href="{{ route('internal.curricula.history', $curriculum) }}">Riwayat</a></td>
+                                <td><div class="table-actions"><a class="primary-button action-button" href="{{ route('kaprodi.submissions.publish.confirm', $curriculum) }}">Publikasikan</a> <a class="primary-button action-button secondary-button" href="{{ route('internal.curricula.history', $curriculum) }}">Riwayat</a></div></td>
                             </tr>
                         @endforeach
                     </tbody>

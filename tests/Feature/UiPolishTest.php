@@ -166,6 +166,39 @@ class UiPolishTest extends TestCase
             ->assertSee('aria-describedby="notes-error"', false)->assertSee('id="notes-error"', false);
     }
 
+    public function test_kaprodi_review_buttons_submit_separate_forms_outside_the_card(): void
+    {
+        $program = StudyProgram::factory()->create();
+        $user = User::factory()->create(['is_active' => true, 'role' => UserRole::HEAD_OF_STUDY_PROGRAM, 'study_program_id' => $program->id]);
+        $curriculum = Curriculum::factory()->create(['study_program_id' => $program->id, 'status' => CurriculumStatus::SUBMITTED, 'description' => '<b>Deskripsi</b>']);
+        $this->actingAs($user);
+        $response = $this->get(route('kaprodi.submissions.show', $curriculum))->assertOk()
+            ->assertSee('<b>Deskripsi</b>')->assertDontSee('<b>Deskripsi</b>', false);
+        $dom = new \DOMDocument;
+        @$dom->loadHTML($response->getContent());
+        $xpath = new \DOMXPath($dom);
+        $this->assertSame(6, $xpath->query('//table[contains(@class,"review-information")]/tbody/tr')->length);
+        $actions = '//div[@class="review-actions"]';
+        $this->assertSame(0, $xpath->query($actions.'/ancestor::form | '.$actions.'/ancestor::section[contains(@class,"portal-card")]')->length);
+        $this->assertSame(['Setujui Kurikulum', 'Minta Revisi', 'Batal'], array_map(fn ($node) => trim($node->textContent), iterator_to_array($xpath->query($actions.'/*'))));
+        foreach (['approve-curriculum' => 'approve', 'revise-curriculum' => 'revision'] as $id => $action) {
+            $this->assertSame(1, $xpath->query($actions.'/button[@form="'.$id.'" and @type="submit"]')->length);
+            $form = '//form[@id="'.$id.'" and @method="POST" and @action="'.route('kaprodi.submissions.'.$action, $curriculum).'"]';
+            $this->assertSame(1, $xpath->query($form.'//input[@name="_token"]')->length);
+        }
+        $this->assertSame(1, $xpath->query('//form[@id="revise-curriculum"]//textarea[@name="notes" and @required]')->length);
+        $this->assertSame(0, $xpath->query('//form[@id="approve-curriculum"]//textarea')->length);
+        $this->assertStyledLink($response->getContent(), 'Riwayat Kurikulum', route('internal.curricula.history', $curriculum));
+        $this->assertStyledLink($response->getContent(), 'Batal', route('kaprodi.submissions.index'));
+        foreach (['dashboard', 'kaprodi.submissions.index'] as $route) {
+            $page = $this->get(route($route))->assertOk();
+            @$dom->loadHTML($page->getContent());
+            $xpath = new \DOMXPath($dom);
+            $this->assertSame(1, $xpath->query('//a[@href="'.route('kaprodi.submissions.show', $curriculum).'" and contains(@class,"action-button")]')->length);
+            $this->assertSame(1, $xpath->query('//main//a[@href="'.route('kaprodi.submissions.approved').'" and contains(@class,"secondary-button")]')->length);
+        }
+    }
+
     public function test_assignment_validation_messages_have_field_associations(): void
     {
         $program = StudyProgram::factory()->create();

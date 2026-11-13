@@ -14,6 +14,7 @@
         <ul class="sidebar-menu">
             <li><a href="{{ route('dashboard') }}" @if(request()->routeIs('dashboard')) aria-current="page" @endif><span aria-hidden="true" class="nav-symbol">&#9638;</span>Dashboard</a></li>
             @can('access-role', 'university_admin')
+                <li><a href="{{ route('university-admin.monitoring.index') }}" @if(request()->routeIs('university-admin.monitoring.*')) aria-current="page" @endif><span aria-hidden="true" class="nav-symbol">&#9636;</span>Monitoring Kurikulum</a></li>
                 <li><a href="{{ route('university-admin.dashboard') }}" @if(request()->routeIs('university-admin.dashboard', 'university-admin.curricula.*')) aria-current="page" @endif><span aria-hidden="true" class="nav-symbol">&#9671;</span>Administrasi Universitas</a></li>
             @endcan
             @can('viewAny', \App\Models\Faculty::class)
@@ -26,7 +27,8 @@
                 <li><a href="{{ route('university-admin.users.index') }}" @if(request()->routeIs('university-admin.users.*')) aria-current="page" @endif><span aria-hidden="true" class="nav-symbol">&#9636;</span>Pengguna</a></li>
             @endcan
             @can('access-role', 'faculty_admin')
-                <li><a href="{{ route('faculty-admin.dashboard') }}" @if(request()->routeIs('faculty-admin.*')) aria-current="page" @endif><span aria-hidden="true" class="nav-symbol">&#9671;</span>Monitoring Fakultas</a></li>
+                <li><a href="{{ route('faculty-admin.dashboard') }}" @if(request()->routeIs('faculty-admin.dashboard', 'faculty-admin.study-programs.*', 'faculty-admin.curricula.*')) aria-current="page" @endif><span aria-hidden="true" class="nav-symbol">&#9671;</span>Monitoring Fakultas</a></li>
+                <li><a href="{{ route('faculty-admin.monitoring.index') }}" @if(request()->routeIs('faculty-admin.monitoring.*')) aria-current="page" @endif><span aria-hidden="true" class="nav-symbol">&#9636;</span>Monitoring Kurikulum</a></li>
             @endcan
             @can('access-role', 'study_program_admin')
                 <li><a href="{{ route('admin.curricula.index') }}" @if(request()->routeIs('admin.curricula.*')) aria-current="page" @endif><span aria-hidden="true" class="nav-symbol">&#9636;</span>Kurikulum</a></li>

@@ -10,6 +10,7 @@ use App\Http\Controllers\AuthenticatedSessionController;
 use App\Http\Controllers\CurriculumHistoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InternalCurriculumMonitoringController;
 use App\Http\Controllers\Kaprodi\CurriculumPublicationController;
 use App\Http\Controllers\Kaprodi\CurriculumReviewController;
 use App\Http\Controllers\NotificationController;
@@ -57,6 +58,7 @@ Route::middleware(['auth:web', 'can:access-internal-dashboard'])->group(function
     Route::post('/internal/notifikasi/{notification}/read', [NotificationController::class, 'read'])->whereNumber('notification')->name('notifications.read');
     Route::get('/internal/kurikulum/{curriculum}/riwayat', CurriculumHistoryController::class)->can('view', 'curriculum')->name('internal.curricula.history');
     Route::prefix('university-admin')->name('university-admin.')->middleware('can:access-role,"university_admin"')->group(function (): void {
+        Route::get('/monitoring-kurikulum', InternalCurriculumMonitoringController::class)->name('monitoring.index');
         Route::get('/pengguna', [UserController::class, 'index'])->can('viewAny', User::class)->name('users.index');
         Route::get('/pengguna/tambah', [UserController::class, 'create'])->can('create', User::class)->name('users.create');
         Route::post('/pengguna', [UserController::class, 'store'])->can('create', User::class)->name('users.store');
@@ -79,6 +81,7 @@ Route::middleware(['auth:web', 'can:access-internal-dashboard'])->group(function
     });
 
     Route::prefix('faculty-admin')->name('faculty-admin.')->middleware('can:access-role,"faculty_admin"')->group(function (): void {
+        Route::get('/monitoring-kurikulum', InternalCurriculumMonitoringController::class)->name('monitoring.index');
         Route::view('/', 'admin.authorization-placeholder', ['title' => 'Monitoring Fakultas'])->name('dashboard');
         Route::get('/program-studi/{studyProgram}', function (StudyProgram $studyProgram): View {
             return view('admin.authorization-placeholder', ['title' => 'Monitoring Program Studi', 'resourceName' => $studyProgram->name]);

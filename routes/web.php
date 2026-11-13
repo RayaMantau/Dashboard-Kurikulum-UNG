@@ -95,6 +95,7 @@ Route::middleware(['auth:web', 'can:access-internal-dashboard'])->group(function
             Route::get('/mata-kuliah/tambah', [CourseController::class, 'create'])->can('create', Course::class)->name('courses.create');
             Route::post('/mata-kuliah', [CourseController::class, 'store'])->can('create', Course::class)->name('courses.store');
             Route::get('/mata-kuliah/{course}/edit', [CourseController::class, 'edit'])->can('update', 'course')->name('courses.edit');
+            Route::delete('/mata-kuliah/{course}', [CourseController::class, 'destroy'])->can('delete', 'course')->name('courses.destroy');
             Route::match(['put', 'patch'], '/mata-kuliah/{course}', [CourseController::class, 'update'])->can('update', 'course')->name('courses.update');
         });
         Route::get('/kurikulum', [CurriculumController::class, 'index'])->can('viewAny', Curriculum::class)->name('curricula.index');

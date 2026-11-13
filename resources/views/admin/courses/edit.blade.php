@@ -19,4 +19,18 @@
             </div>
         </form>
     </section>
+    @can('delete', $course)
+        <section class="portal-card danger-zone" aria-labelledby="course-danger-title">
+            <h2 id="course-danger-title">Zona Berbahaya</h2>
+            <p>Penghapusan mata kuliah tidak dapat dibatalkan. Mata kuliah yang masih digunakan pada kurikulum tidak dapat dihapus.</p>
+            <details>
+                <summary>Konfirmasi penghapusan {{ $course->name }}</summary>
+                <form method="POST" action="{{ route('admin.courses.destroy', $course) }}" data-pending-form>
+                    @csrf @method('DELETE')
+                    <label class="delete-confirmation"><input type="checkbox" required> Saya yakin ingin menghapus {{ $course->name }}.</label>
+                    <button type="submit" class="primary-button action-button danger-button" data-pending-label="Menghapus...">Hapus Mata Kuliah</button>
+                </form>
+            </details>
+        </section>
+    @endcan
 @endsection

@@ -819,7 +819,12 @@ Stage A down menghapus snapshot dan **menghilangkan informasi historis** yang
 mungkin tidak dapat dibuat ulang dari master. Restore backup bila diperlukan.
 
 FK cascade Course tetap berlaku. Penghapusan langsung master di database masih
-dapat menghapus attachment; aplikasi tidak menyediakan hard delete Course.
+dapat menghapus attachment. DELETE admin.courses.destroy hanya mengizinkan Admin
+Prodi aktif menghapus Course sendiri yang tidak memiliki referensi CurriculumCourse.
+CourseService mengunci actor lalu Course, memeriksa seluruh referensi (termasuk
+nonaktif), dan menjalankan delete serta audit course.deleted dalam satu transaksi.
+Lock Course dipakai bersama proses assignment existing; snapshot tidak diubah.
+Konfirmasi hapus hanya tersedia pada Zona Berbahaya halaman Edit Mata Kuliah.
 Perubahan strategi FK ditunda sebagai keputusan terpisah.
 
 ## Phase 9 — shared brand assets

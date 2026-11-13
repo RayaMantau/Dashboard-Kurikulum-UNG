@@ -145,7 +145,7 @@ class CourseManagementTest extends TestCase
                 ->assertSee('Program Studi '.$user->studyProgram->name)->assertSee('Dashboard')
                 ->assertSee('name="_token"', false)->assertDontSee('name="study_program_id"', false)
                 ->assertDontSee('name="faculty_id"', false)->assertDontSee('name="is_active"', false)
-                ->assertDontSee('Hapus Mata Kuliah')->assertDontSee('Nonaktifkan')
+                ->assertDontSee('Nonaktifkan')
                 ->assertSee('href="'.route('admin.courses.index').'"  aria-current="page"', false);
             if ($action === 'edit') {
                 $response->assertSee('value="PUT"', false)->assertSee($course->description)->assertDontSee($course->description, false);
@@ -309,7 +309,7 @@ class CourseManagementTest extends TestCase
         $this->assertSame($status, $curriculum->fresh()->status);
     }
 
-    public function test_delete_is_not_available_for_unused_or_referenced_courses(): void
+    public function test_index_does_not_offer_delete_or_deactivation_and_get_cannot_mutate(): void
     {
         $user = $this->administrator();
         $unused = Course::factory()->create(['study_program_id' => $user->study_program_id]);
@@ -319,7 +319,6 @@ class CourseManagementTest extends TestCase
         CurriculumCourse::factory()->create(['course_id' => $used->id, 'curriculum_id' => $curriculum->id, 'semester_id' => $semester->id]);
         $this->actingAs($user);
         foreach ([$unused, $used] as $course) {
-            $this->delete(route('admin.courses.update', $course))->assertMethodNotAllowed();
             $this->get(route('admin.courses.update', [$course, 'is_active' => '0']))->assertMethodNotAllowed();
         }
         $this->get(route('admin.courses.index'))->assertDontSee('Hapus')->assertDontSee('Nonaktifkan');

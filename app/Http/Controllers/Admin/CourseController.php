@@ -54,4 +54,11 @@ class CourseController extends Controller
 
         return redirect()->route('admin.courses.edit', $course)->with('success', 'Mata kuliah berhasil diperbarui.');
     }
+
+    public function destroy(Request $request, Course $course, CourseService $service): RedirectResponse
+    {
+        $service->delete($request->user(), $course);
+
+        return redirect()->route('admin.courses.index')->with('success', 'Mata kuliah berhasil dihapus.');
+    }
 }

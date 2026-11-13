@@ -49,9 +49,13 @@ class UiPolishTest extends TestCase
         @$dom->loadHTML($response->getContent());
         $xpath = new \DOMXPath($dom);
         $this->assertSame(0, $xpath->query('//footer//a[normalize-space(.)="Beranda"]')->length);
-        foreach (['home', 'faculties.index', 'study-programs.index', 'search', 'monitoring.index', 'login'] as $name) {
+        foreach (['home', 'faculties.index', 'study-programs.index', 'search', 'monitoring.index'] as $name) {
             $this->assertSame(1, $xpath->query('//nav[@id="public-navigation"]//a[@href="'.route($name).'"]')->length);
         }
+        $this->assertSame(1, $xpath->query('//header//a[@href="'.route('login').'"]')->length);
+        $this->assertSame(1, $xpath->query('//div[@class="header-top"]//a[@href="'.route('login').'"]')->length);
+        $this->assertSame(0, $xpath->query('//nav[@id="public-navigation"]//a[@href="'.route('login').'"]')->length);
+        $response->assertSee('Sistem Informasi Monitoring Kurikulum UNG')->assertDontSee('Sistem Informasi Manajemen Kurikulum');
         $this->get(route('login'))->assertOk()->assertSee('SIMKUR UNG')->assertDontSee('>Beranda</a>', false)
             ->assertSee('name="email"', false)->assertSee('name="password"', false)->assertSee('name="_token"', false);
     }

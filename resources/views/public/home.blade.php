@@ -5,7 +5,7 @@
         <div class="public-container hero-grid">
             <div class="hero-copy">
                 <p class="public-eyebrow"><span aria-hidden="true"></span> PORTAL INFORMASI AKADEMIK</p>
-                <h1 id="hero-title">SIMKUR UNG <span>Sistem Informasi Manajemen Kurikulum</span></h1>
+                <h1 id="hero-title">SIMKUR UNG <span>Sistem Informasi Monitoring Kurikulum UNG</span></h1>
                 <p class="hero-description">Temukan informasi kurikulum, struktur semester, dan mata kuliah dari Program Studi di Universitas Negeri Gorontalo.</p>
             </div>
             <div class="hero-art" aria-hidden="true">

@@ -172,9 +172,14 @@
 .form-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 24px; padding-top: 16px; }
 .faculty-table { min-width: 720px; }
 .faculty-table th:first-child { width: 30%; }
-.curriculum-table { min-width: 1320px; table-layout: fixed; }
+.curriculum-table { min-width: 1580px; table-layout: fixed; }
 .curriculum-table th:first-child { width: 160px; }
+.curriculum-table thead th:nth-child(4),
+.curriculum-table thead th:nth-child(5),
+.curriculum-table thead th:nth-child(7),
+.curriculum-table thead th:nth-child(9) { width: 160px; }
 .curriculum-table th:nth-child(6) { width: 200px; }
+.curriculum-table thead th:nth-child(8) { width: 150px; }
 .curriculum-table th:last-child { width: 190px; }
 .table-actions { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 8px; }
 .primary-button.table-button { padding: 9px 12px; min-height: 44px; font-size: 13px; flex-shrink: 1; }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="@yield('description', 'Informasi kurikulum Universitas Negeri Gorontalo. Ringkasan fakultas, program studi, dan kurikulum yang telah dipublikasikan.')">
+    <meta name="description" content="@yield('description', 'Sistem Informasi Monitoring Kurikulum UNG. Ringkasan fakultas, program studi, dan kurikulum yang telah dipublikasikan.')">
     <title>@yield('title', 'Beranda') | SIMKUR UNG</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet">

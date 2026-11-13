@@ -15,7 +15,7 @@
     <header class="portal-header">
         <a class="portal-brand" href="{{ route('home') }}">
             <img class="ung-logo" src="{{ asset('images/ung-logo.png') }}" alt="Logo Universitas Negeri Gorontalo" width="48" height="48">
-            <span>SIMKUR UNG<small>Sistem Informasi Manajemen Kurikulum</small></span></a>
+            <span>SIMKUR UNG<small>Sistem Informasi Monitoring Kurikulum UNG</small></span></a>
     </header>
     <main id="main" class="portal-main" tabindex="-1">
         @yield('content')

@@ -156,7 +156,17 @@ h3 { font-size: 18px; line-height: 1.5; letter-spacing: -.015em; margin: 18px 0 
 .public-button:hover { background: var(--color-primary-hover); }
 
 
-.header-inner { flex-wrap: wrap; }
+.header-inner { flex-direction: column; align-items: stretch; }
+.header-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-width: 0; }
+.header-access { flex: 0 0 auto; max-width: 40%; }
+.header-access .public-button { white-space: normal; gap: 8px; }
+#public-navigation { width: 100%; padding-top: 12px; border-top: 1px solid var(--public-line); }
 #public-navigation ul { flex-wrap: wrap; }
 .public-brand { max-width: 100%; flex-shrink: 1; }
 .public-brand > span { min-width: 0; overflow-wrap: anywhere; }
+
+@media (max-width: 640px) {
+    .header-top { gap: 12px; }
+    .header-top .ung-logo { width: 36px; height: 36px; }
+    .header-access .button-small { padding: 10px 12px; font-size: 12px; }
+}

@@ -62,7 +62,7 @@
 .sidebar-menu a { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 8px; text-decoration: none; color: #475569; font-size: 14px; font-weight: 500; min-height: 48px; }
 .sidebar-menu a:hover { background: #F1F5F9; color: var(--color-primary-hover); }
 .sidebar-menu a[aria-current] { background: var(--color-primary-soft); color: var(--color-primary-hover); font-weight: 700; box-shadow: inset 3px 0 var(--color-primary); }
-.nav-symbol { width: 20px; flex-shrink: 0; text-align: center; font-size: 20px; }
+.nav-icon { width: 22px; height: 22px; flex-shrink: 0; }
 .sidebar-bottom { margin-top: auto; padding: 24px; font-size: 13px; border-top: 1px solid #E2E8F0; color: #64748B; }
 .sidebar-bottom a { text-decoration: none; }
 .shell-topbar { position: sticky; top: 0; min-height: 72px; padding: 12px 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; background: #FFFFFF; border-bottom: 1px solid #E2E8F0; z-index: 20; }

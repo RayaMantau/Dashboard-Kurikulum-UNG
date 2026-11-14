@@ -70,6 +70,40 @@ class InternalShellTest extends TestCase
             ->assertDontSee('id="internal-sidebar"', false);
     }
 
+    #[DataProvider('roles')]
+    public function test_sidebar_icons_are_consistent_decorative_and_role_specific(UserRole $role, string $label, string $area): void
+    {
+        $program = StudyProgram::factory()->create();
+        $user = User::factory()->create(['role' => $role, 'is_active' => true, 'faculty_id' => $program->faculty_id, 'study_program_id' => $program->id]);
+        $expected = ['Dashboard' => 'dashboard'] + match ($role) {
+            UserRole::UNIVERSITY_ADMIN => ['Monitoring Kurikulum' => 'monitoring', 'Fakultas' => 'faculty', 'Program Studi' => 'study-program', 'Pengguna' => 'users'],
+            UserRole::FACULTY_ADMIN => ['Monitoring Kurikulum' => 'monitoring'],
+            UserRole::STUDY_PROGRAM_ADMIN => ['Kurikulum' => 'curriculum', 'Mata Kuliah' => 'courses'],
+            UserRole::HEAD_OF_STUDY_PROGRAM => ['Review Kurikulum' => 'review'],
+        };
+        $response = $this->actingAs($user)->get(route($area))->assertOk()->assertDontSee('nav-symbol')
+            ->assertSee('data-sidebar-open', false)->assertSee('data-sidebar-close', false)
+            ->assertSee('aria-controls="internal-sidebar"', false)->assertSee('internal.js');
+        $dom = new \DOMDocument;
+        @$dom->loadHTML($response->getContent());
+        $xpath = new \DOMXPath($dom);
+        $links = $xpath->query('//ul[@class="sidebar-menu"]/li/a');
+        $this->assertCount(count($expected), $links);
+        foreach ($links as $link) {
+            $name = trim($link->textContent);
+            $this->assertArrayHasKey($name, $expected);
+            $icons = $xpath->query('./svg', $link);
+            $this->assertSame(1, $icons->length);
+            $icon = $icons->item(0);
+            foreach (['data-icon' => $expected[$name], 'width' => '22', 'height' => '22', 'fill' => 'none', 'stroke' => 'currentColor', 'stroke-width' => '1.8', 'aria-hidden' => 'true', 'focusable' => 'false'] as $attribute => $value) {
+                $this->assertSame($value, $icon->getAttribute($attribute));
+            }
+        }
+        $active = $xpath->query('//ul[@class="sidebar-menu"]//a[@aria-current="page"]');
+        $this->assertSame(1, $active->length);
+        $this->assertSame(route($area), $active->item(0)->getAttribute('href'));
+    }
+
     public function test_admin_sidebars_only_link_to_current_production_areas(): void
     {
         $program = StudyProgram::factory()->create();

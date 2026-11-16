@@ -121,7 +121,7 @@ class InternalAuthenticationTest extends TestCase
         $user = User::factory()->create(['is_active' => false]);
 
         $this->actingAs($user, 'web')->get(route('dashboard'))->assertForbidden();
-        $this->post(route('logout'))->assertRedirect(route('login'));
+        $this->post(route('logout'))->assertRedirect(route('home'));
         $this->assertGuest('web');
     }
 
@@ -133,13 +133,14 @@ class InternalAuthenticationTest extends TestCase
         $sessionId = session()->getId();
         $token = session()->token();
 
-        $this->post(route('logout'))->assertRedirect(route('login'))
+        $this->post(route('logout'))->assertRedirect(route('home'))
             ->assertSessionMissing('private_value');
 
         $this->assertGuest('web');
         $this->assertNotSame($sessionId, session()->getId());
         $this->assertNotSame($token, session()->token());
         $this->assertDatabaseHas('audit_logs', ['user_id' => $user->id, 'action' => 'auth.logout']);
+        $this->get(route('home'))->assertOk()->assertSee('Masuk')->assertDontSee('Dashboard Internal');
         $this->get(route('dashboard'))->assertRedirect(route('login'));
     }
 

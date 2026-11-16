@@ -176,6 +176,7 @@ h3 { font-size: 18px; line-height: 1.5; letter-spacing: -.015em; margin: 18px 0 
 .menu-toggle, .public-drawer-heading { display: none; }
 .public-nav-overlay[hidden] { display: none; }
 @media (max-width: 1023px) {
+    .header-top .public-brand { flex: 1 1 auto; }
     .header-access { max-width: 50%; }
     .public-brand small { display: none; }
     .public-nav-ready .menu-toggle { display: inline-flex; flex-shrink: 0; width: 44px; padding: 0; }

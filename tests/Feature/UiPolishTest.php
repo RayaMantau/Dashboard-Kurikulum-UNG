@@ -57,6 +57,8 @@ class UiPolishTest extends TestCase
         $this->assertSame(0, $xpath->query('//nav[@id="public-navigation"]//a[@href="'.route('login').'"]')->length);
         $this->assertSame(1, $xpath->query('//div[@id="public-drawer"]/nav[@id="public-navigation"]')->length);
         $this->assertSame(1, $xpath->query('//button[@aria-controls="public-drawer" and @aria-expanded="false" and @aria-label="Buka menu navigasi"]')->length);
+        $this->assertSame(1, $xpath->query('//div[@class="header-top"]/*[1][self::button and @class="menu-toggle"]')->length);
+        $this->assertSame(1, $xpath->query('//div[@class="header-top"]/*[2][self::a and @class="public-brand"]')->length);
         $this->assertSame(1, $xpath->query('//button[@class="public-nav-overlay" and @hidden]')->length);
         $this->assertSame(1, $xpath->query('//div[@id="public-drawer"]//button[@aria-label="Tutup menu navigasi"]')->length);
         $response->assertSee('Sistem Informasi Monitoring Kurikulum UNG')->assertDontSee('Sistem Informasi Manajemen Kurikulum');

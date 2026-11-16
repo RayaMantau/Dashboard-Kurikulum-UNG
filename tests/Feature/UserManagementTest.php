@@ -272,7 +272,7 @@ class UserManagementTest extends TestCase
         $audit = AuditLog::query()->sole();
         $this->assertStringNotContainsString('password', $audit->toJson());
         $this->assertStringNotContainsString($target->fresh()->password, $audit->toJson());
-        $this->post(route('logout'))->assertRedirect(route('login'));
+        $this->post(route('logout'))->assertRedirect(route('home'));
         $this->post(route('login.store'), ['email' => $target->email, 'password' => 'password'])->assertSessionHasErrors('email');
         $this->post(route('login.store'), ['email' => $target->email, 'password' => $this->payload()['password']])->assertRedirect(route('dashboard'));
         $this->assertAuthenticatedAs($target);

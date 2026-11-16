@@ -1,6 +1,9 @@
 <header class="public-header">
     <div class="public-container header-inner">
         <div class="header-top">
+            <button class="menu-toggle" type="button" aria-label="Buka menu navigasi" aria-controls="public-drawer" aria-expanded="false">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
             <a class="public-brand" href="{{ route('home') }}" aria-label="SIMKUR UNG, beranda">
                 <img class="ung-logo" src="{{ asset('images/ung-logo.png') }}" alt="Logo Universitas Negeri Gorontalo" width="48" height="48">
                 <span>SIMKUR UNG<small>Sistem Informasi Monitoring Kurikulum UNG</small></span>
@@ -11,9 +14,6 @@
                 @else
                     <a class="public-button button-small" href="{{ route('login') }}">Masuk <span aria-hidden="true">&rarr;</span></a>
                 @endauth
-                <button class="menu-toggle" type="button" aria-label="Buka menu navigasi" aria-controls="public-drawer" aria-expanded="false">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-                </button>
             </div>
         </div>
         <button class="public-nav-overlay" type="button" aria-label="Tutup menu navigasi" tabindex="-1" hidden></button>

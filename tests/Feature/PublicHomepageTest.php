@@ -146,7 +146,7 @@ class PublicHomepageTest extends TestCase
     public function test_navigation_has_no_broken_future_links_and_accessible_menu_markup(): void
     {
         $response = $this->get(route('home'))->assertOk()->assertSee('href="'.route('home').'"', false)
-            ->assertDontSee('class="menu-toggle"', false)
+            ->assertSee('class="menu-toggle"', false)
             ->assertSee('id="public-navigation"', false)->assertSee('aria-label="Navigasi publik"', false)
             ->assertSee('href="'.route('faculties.index').'"', false)->assertSee('id="ringkasan"', false)
             ->assertSee('href="'.route('search').'"', false)->assertSee('Cari Mata Kuliah')->assertDontSee('Segera');

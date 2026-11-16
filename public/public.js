@@ -1,45 +1,72 @@
-const publicMenu = document.querySelector('#public-navigation');
-const publicToggle = document.querySelector('.menu-toggle');
-const publicHeader = document.querySelector('.public-header');
+const drawer = document.querySelector('#public-drawer');
+const trigger = document.querySelector('.menu-toggle');
+const overlay = document.querySelector('.public-nav-overlay');
 
-if (publicMenu && publicToggle && publicHeader) {
-    const mobile = window.matchMedia('(max-width: 1200px)');
+if (drawer && trigger && overlay) {
+    const mobile = window.matchMedia('(max-width: 1023px)');
+    const closeButton = drawer.querySelector('.public-menu-close');
+    const background = document.querySelectorAll('.header-top, body > main, body > footer, .public-skip');
+    let opened = false;
+    document.documentElement.classList.add('public-nav-ready');
 
-    const closeMenu = (restoreFocus = false) => {
-        publicMenu.hidden = mobile.matches;
-        publicToggle.setAttribute('aria-expanded', 'false');
-        if (restoreFocus && mobile.matches) publicToggle.focus();
+    const close = (restoreFocus = true) => {
+        opened = false;
+        document.body.classList.remove('public-nav-open');
+        background.forEach(element => { element.inert = false; });
+        overlay.hidden = true;
+        trigger.setAttribute('aria-expanded', 'false');
+        drawer.removeAttribute('role');
+        drawer.removeAttribute('aria-modal');
+        drawer.inert = mobile.matches;
+        if (mobile.matches) drawer.setAttribute('aria-hidden', 'true');
+        else drawer.removeAttribute('aria-hidden');
+        if (restoreFocus && mobile.matches) trigger.focus();
     };
 
-    const syncMenu = () => {
-        const focusWillBeHidden = mobile.matches && publicMenu.contains(document.activeElement);
-        const toggleHadFocus = document.activeElement === publicToggle;
-        publicToggle.hidden = !mobile.matches;
-        closeMenu(focusWillBeHidden);
-        if (!mobile.matches && toggleHadFocus) publicMenu.querySelector('a').focus();
+    const sync = () => {
+        const focusInside = drawer.contains(document.activeElement);
+        const focusOnTrigger = document.activeElement === trigger;
+        close(focusInside);
+        if (!mobile.matches && (focusInside || focusOnTrigger)) drawer.querySelector('a').focus();
     };
 
-    publicToggle.addEventListener('click', () => {
-        const open = publicToggle.getAttribute('aria-expanded') !== 'true';
-        publicToggle.setAttribute('aria-expanded', String(open));
-        publicMenu.hidden = !open;
+    trigger.addEventListener('click', () => {
+        if (!mobile.matches) return;
+        opened = true;
+        drawer.inert = false;
+        drawer.removeAttribute('aria-hidden');
+        drawer.setAttribute('role', 'dialog');
+        drawer.setAttribute('aria-modal', 'true');
+        trigger.setAttribute('aria-expanded', 'true');
+        overlay.hidden = false;
+        document.body.classList.add('public-nav-open');
+        requestAnimationFrame(() => { if (opened) closeButton.focus(); });
+        background.forEach(element => { element.inert = true; });
     });
-
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && mobile.matches && publicToggle.getAttribute('aria-expanded') === 'true') {
+    closeButton.addEventListener('click', () => close());
+    overlay.addEventListener('click', () => close());
+    drawer.addEventListener('click', event => {
+        if (opened && event.target.closest('a')) close();
+    });
+    document.addEventListener('keydown', event => {
+        if (!opened) return;
+        if (event.key === 'Escape') {
             event.preventDefault();
-            closeMenu(true);
+            close();
+        } else if (event.key === 'Tab') {
+            const controls = [...drawer.querySelectorAll('button, a[href]')];
+            const first = controls[0];
+            const last = controls[controls.length - 1];
+            if (!drawer.contains(document.activeElement)) {
+                event.preventDefault(); first.focus();
+            } else if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault(); last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault(); first.focus();
+            }
         }
     });
-
-    document.addEventListener('click', (event) => {
-        if (mobile.matches && !publicHeader.contains(event.target)) closeMenu();
-    });
-
-    publicMenu.addEventListener('click', (event) => {
-        if (mobile.matches && event.target.closest('a')) closeMenu(true);
-    });
-
-    mobile.addEventListener('change', syncMenu);
-    syncMenu();
+    mobile.addEventListener('change', sync);
+    window.addEventListener('pageshow', sync);
+    sync();
 }

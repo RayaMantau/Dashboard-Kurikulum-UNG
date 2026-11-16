@@ -41,7 +41,7 @@ class UiPolishTest extends TestCase
     public function test_public_branding_and_cleanup_preserve_navigation_and_login(): void
     {
         $response = $this->get(route('home'))->assertOk()->assertSee('SIMKUR UNG')
-            ->assertDontSee('menu-toggle')->assertDontSee('Jelajahi Fakultas')
+            ->assertSee('menu-toggle')->assertDontSee('Jelajahi Fakultas')
             ->assertDontSee('Terbuka untuk semua.')->assertDontSee('Tanpa perlu akun.')
             ->assertDontSee('Cari mata kuliah dalam kurikulum aktif dan arsip.')
             ->assertDontSee('Monitoring Kurikulum dan jadwal Monev Program Studi.');
@@ -55,6 +55,10 @@ class UiPolishTest extends TestCase
         $this->assertSame(1, $xpath->query('//header//a[@href="'.route('login').'"]')->length);
         $this->assertSame(1, $xpath->query('//div[@class="header-top"]//a[@href="'.route('login').'"]')->length);
         $this->assertSame(0, $xpath->query('//nav[@id="public-navigation"]//a[@href="'.route('login').'"]')->length);
+        $this->assertSame(1, $xpath->query('//div[@id="public-drawer"]/nav[@id="public-navigation"]')->length);
+        $this->assertSame(1, $xpath->query('//button[@aria-controls="public-drawer" and @aria-expanded="false" and @aria-label="Buka menu navigasi"]')->length);
+        $this->assertSame(1, $xpath->query('//button[@class="public-nav-overlay" and @hidden]')->length);
+        $this->assertSame(1, $xpath->query('//div[@id="public-drawer"]//button[@aria-label="Tutup menu navigasi"]')->length);
         $response->assertSee('Sistem Informasi Monitoring Kurikulum UNG')->assertDontSee('Sistem Informasi Manajemen Kurikulum');
         $this->get(route('login'))->assertOk()->assertSee('SIMKUR UNG')->assertDontSee('>Beranda</a>', false)
             ->assertSee('name="email"', false)->assertSee('name="password"', false)->assertSee('name="_token"', false);

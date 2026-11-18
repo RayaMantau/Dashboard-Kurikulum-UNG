@@ -16,7 +16,7 @@ filesystem stat, uploader/path, atau query per baris. Lihat Dokumen menuju ancho
 detail publik, yang memakai streaming DocumentService existing.
 
 CurriculumMonitoringService::schedule menghitung dari immutable_date ratified_at:
-addYearsNoOverflow(2/4), dibandingkan hari ini pada config app.timezone (UTC),
+addYearsNoOverflow(2/4), dibandingkan hari ini pada config app.timezone (APP_TIMEZONE, default Asia/Makassar / WITA),
 date-only dan inklusif pada batas. 29 Februari 2024 -> Minor 28 Februari 2026,
 Rekonstruksi 29 Februari 2028; setiap jadwal dihitung dari tanggal asli.
 Null menghasilkan unknown tanpa exception. Tidak menambah CurriculumStatus,

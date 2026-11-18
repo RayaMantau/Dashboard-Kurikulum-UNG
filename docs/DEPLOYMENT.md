@@ -66,9 +66,21 @@ atau queue worker. MAIL_MAILER=log bukan pengiriman email production; jangan
 menganggap reset email tersedia. Jika pekerjaan queue ditambahkan kelak, siapkan
 worker terkelola dan restart worker saat release. Tidak ada worker baru di fase ini.
 
-Timezone aplikasi aktual UTC (config/app.php). APP_LOCALE default en, tetapi teks
-aplikasi/Form Request berbahasa Indonesia. Timestamp tidak diubah ke zona lokal
-pada Phase 10. Jangan mengganti timezone diam-diam.
+Timezone operasional adalah `APP_TIMEZONE=Asia/Makassar` (WITA, UTC+08:00),
+sekaligus default `config/app.php`. Set eksplisit di environment deployment;
+periksa override lama `APP_TIMEZONE=UTC` sebelum `php artisan config:cache`.
+Restart proses aplikasi/scheduler yang berjalan lama setelah perubahan konfigurasi.
+APP_LOCALE default en, tetapi teks aplikasi/Form Request berbahasa Indonesia.
+
+Penyimpanan timestamp tetap mengikuti konvensi Eloquent existing: waktu aplikasi
+berformat `Y-m-d H:i:s` tanpa offset. Write baru memakai WITA; tidak ada migration,
+rewrite, atau konversi otomatis timestamp lama yang ditulis saat aplikasi memakai
+UTC. Nilai historis tanpa offset tetap ditampilkan sebagai wall-clock tersimpan,
+bukan diklaim telah dikonversi dari UTC. Catat waktu cutover saat deployment dan
+periksa timezone session database/server (terutama kolom TIMESTAMP MySQL).
+Jangan menganggap seluruh data historis memiliki zona waktu yang sama atau
+melakukan koreksi massal tanpa audit terpisah. Tanggal pengesahan adalah DATE;
+perhitungan Monev tetap berdasarkan tanggal lokal, bukan durasi jam.
 
 ## Storage, permissions dan upload
 
@@ -226,9 +238,11 @@ of this source alone. Example Linux cron (replace paths and runtime user):
 ```
 
 The command `php artisan curriculum:send-monev-reminders` runs daily at 08:00 in
-config('app.timezone'), with withoutOverlapping. Verify that timezone (current
-default UTC) and schedule:list on the target; configure timezone intentionally
-before config:cache. Use an application-owned cache store for scheduler locks.
+`config('app.timezone')`, explicitly applied to the schedule, with withoutOverlapping.
+With `APP_TIMEZONE=Asia/Makassar`, this is 08:00 WITA / 00:00 UTC. Verify
+`php artisan schedule:list` on the target after config:cache. The server cron
+continues invoking schedule:run every minute regardless of server timezone.
+Use an application-owned cache store for scheduler locks.
 Monitor scheduler exit/logs; no emails, queue worker, or external messaging needed.
 
 A manual run is supported and creates real notifications: run it only deliberately.

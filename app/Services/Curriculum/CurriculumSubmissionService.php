@@ -6,6 +6,7 @@ use App\Enums\CurriculumStatus;
 use App\Enums\UserRole;
 use App\Models\AuditLog;
 use App\Models\Curriculum;
+use App\Models\Document;
 use App\Models\Notification;
 use App\Models\User;
 use DomainException;
@@ -100,6 +101,16 @@ class CurriculumSubmissionService
             $metadataErrors[] = 'Jumlah semester harus lebih dari 0.';
         }
 
+        if ($curriculum->ratified_at === null) {
+            $metadataErrors[] = 'Tanggal pengesahan wajib diisi.';
+        }
+        if ($curriculum->safeExternalDocumentUrl() === null) {
+            $metadataErrors[] = 'Link file kurikulum HTTP/HTTPS wajib diisi.';
+        }
+        if (! $curriculum->documents()->where('document_type', Document::RATIFICATION_DECREE)->exists()) {
+            $metadataErrors[] = 'SK pengesahan kurikulum wajib diunggah.';
+        }
+
         $numbers = $curriculum->semesters()->orderBy('semester_number')->pluck('semester_number')->all();
         $expected = $curriculum->total_semesters > 0 ? range(1, $curriculum->total_semesters) : [];
         $semesterErrors = [];
@@ -111,12 +122,12 @@ class CurriculumSubmissionService
         }
         $missing = array_values(array_diff($expected, $numbers));
         $hasCourses = $curriculum->curriculumCourses()->exists();
-        $hasDocuments = $curriculum->documents()->exists();
+        $hasDocuments = $curriculum->documents()->where('document_type', Document::CURRICULUM)->exists();
         $checks = [
             'metadata' => [
                 'label' => 'Metadata kurikulum',
                 'passed' => $metadataErrors === [],
-                'message' => 'Nama, tahun, total SKS, dan jumlah semester telah diisi.',
+                'message' => 'Nama, tahun, total SKS, jumlah semester, tanggal pengesahan, link file, dan SK telah dilengkapi.',
                 'errors' => $metadataErrors,
             ],
             'semesters' => [

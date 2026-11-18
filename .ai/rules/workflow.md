@@ -31,8 +31,9 @@ Minimum validation:
 - At least one course exists.
 - Curriculum total_sks must be greater than zero. Equality with attachment/semester
   sums remains deferred; Phase 7F must not add a new consistency requirement.
-- At least one Document database record exists. Phase 7F does not scan storage or
-  introduce an official/category flag.
+- At least one curriculum Document and a ratification_decree (SK) record exist.
+  Required ratified_at and a safe HTTP/HTTPS external_document_url must be present.
+  Readiness checks database records, not physical storage (approved monitoring revision).
 
 Phase 7F readiness UI and submission validation share
 CurriculumSubmissionService::readiness(). Metadata requirements remain nonblank

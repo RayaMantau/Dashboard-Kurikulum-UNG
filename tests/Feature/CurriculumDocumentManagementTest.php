@@ -278,6 +278,8 @@ class CurriculumDocumentManagementTest extends TestCase
             $this->assertStringContainsString('Dokumen kurikulum resmi wajib diunggah.', $exception->getMessage());
         }
         $this->assertSame(CurriculumStatus::DRAFT, $curriculum->fresh()->status);
+        $curriculum->update(['ratified_at' => '2026-01-01', 'external_document_url' => 'https://example.test/kurikulum.pdf']);
+        Document::factory()->create(['curriculum_id' => $curriculum->id, 'document_type' => Document::RATIFICATION_DECREE]);
         $this->upload($actor, $curriculum);
         app(CurriculumSubmissionService::class)->submit($actor, $curriculum);
         $this->assertSame(CurriculumStatus::SUBMITTED, $curriculum->fresh()->status);

@@ -341,3 +341,13 @@ Daftar Admin Prodi menggunakan sepuluh kolom: Tahun Perbaikan Kurikulum, Tahun B
 Semester dan Dokumen memiliki tombol pada kolom masing-masing. Aksi berisi Edit, Riwayat, Ajukan Review sesuai Policy. Kurikulum terkunci menyediakan tautan Lihat, tanpa kontrol mutation. Tombol outline/primary memakai kelompok flex-wrap dan tabel scroll berlabel. Reset dan Kembali ke beranda di sidebar internal dihapus. Master Mata Kuliah tetap berada di sidebar.
 
 Struktur Semester menyediakan Edit Semester dan Kelola Mata Kuliah per semester. Hapus hanya pada Edit Semester dalam Zona Berbahaya, dengan konfirmasi checkbox wajib untuk semester kosong. Server tetap memeriksa izin dan keterisian semester.
+
+### Current homepage monitoring revision
+
+The latest-curriculum card section is replaced with the shared seven-column
+monitoring table (Faculty is a separate column). Document/external links are
+buttons. The focusable wrapper scrolls internally on narrow screens. Navbar has
+four entries: Beranda, Fakultas, Program Studi, Cari Mata Kuliah; the left mobile
+drawer and Masuk position are unchanged. Legacy monitoring URL remains readable.
+Create/edit require date, HTTP/HTTPS link and SK when absent; existing SK shows
+an availability message and internal document link, without forcing reupload.

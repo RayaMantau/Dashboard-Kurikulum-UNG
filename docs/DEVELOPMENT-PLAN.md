@@ -206,3 +206,35 @@ Tidak ada remote deployment atau fitur post-MVP yang dikerjakan.
 Revisi navigasi Admin Prodi: tabel sepuluh kolom dengan tanggal pengesahan dan Monev existing, tombol Semester/Dokumen terpisah, assignment melalui semester, serta penghapusan semester kosong dari halaman edit dengan konfirmasi. Sidebar master Course dipertahankan; tautan beranda sidebar dan Reset daftar kurikulum dihapus.
 
 Tidak ada migration, dependency, perubahan Policy, workflow, visibilitas publik, atau rumus Monev. Filter semester pada route assignment existing dibatasi pada curriculum yang telah diotorisasi. Pengujian mencakup posisi aksi, semester terpilih, penolakan lintas kurikulum, navigasi read-only status terkunci, dan halaman publik tanpa kontrol mutation. Verifikasi visual desktop/mobile masih memerlukan browser.
+
+
+## Revisi disetujui: homepage monitoring, SK dan reminder Monev
+
+Kontrak ini menggantikan ketentuan fase sebelumnya mengenai metadata opsional,
+dokumen tanpa jenis, dan belum adanya reminder. Homepage menampilkan monitoring
+current published per Prodi aktif/Faculty aktif, dengan pagination dan kolom Fakultas.
+Route monitoring lama dipertahankan untuk kompatibilitas, tanpa menu navbar.
+Tanggal pengesahan dan URL HTTP/HTTPS wajib saat create/edit; data lama tetap nullable.
+SK PDF privat wajib pada create/edit tanpa SK, dan pada submission bersama dokumen
+kurikulum biasa serta semua prasyarat existing. SK tidak dipublikasikan.
+Reminder in-app harian +2/+4 tahun ditujukan kepada Admin Prodi, Kaprodi dan Admin
+Fakultas aktif terkait. Hanya current published di unit aktif; dua milestone dikirim
+masing-masing sekali, termasuk catch-up. Tidak ada perubahan status workflow.
+
+### Validation monitoring revision ? 19 November 2026
+
+Implemented homepage monitoring, required date/URL, internal SK document type,
+private transactional upload with rollback compensation, and daily in-app Monev
+reminders. No status transition or role permission changes. Compatibility URL
+retained. Tests use existing PHPUnit conventions because testing-best-practices
+skill is unavailable and the user explicitly authorized this fallback.
+
+Targeted public/metadata/reminder/notification/readiness suite: 100 tests, 748
+assertions. Full suite: 709 tests, 6,854 assertions. Pint and Node 24 frontend build
+pass. Headless Chrome QA covers homepage widths 1440/1024/768/390/360, internal
+form and notifications at 1440/390, and server-rendered validation errors.
+No page-level overflow; narrow monitoring tables scroll internally.
+
+Migration verified on isolated test/QA SQLite only, not development DB. Server
+scheduler installation and production-engine concurrency validation remain
+operator deployment checks. No commit, push or merge performed by this task.

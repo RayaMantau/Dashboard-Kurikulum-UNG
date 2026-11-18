@@ -1,9 +1,9 @@
 @props(['programs', 'internal' => false])
 <div class="monitoring-table-wrap" tabindex="0" role="region" aria-label="Monitoring kurikulum program studi">
     <table class="monitoring-table">
-        <caption class="sr-only">Monitoring kurikulum yang sedang dipublikasikan per Program Studi</caption>
+        <caption class="monitoring-caption">Monitoring kurikulum yang sedang dipublikasikan per Program Studi</caption>
         <thead><tr>
-            <th scope="col">Program Studi</th><th scope="col">Tahun Perbaikan Kurikulum</th>
+            <th scope="col">Fakultas</th><th scope="col">Program Studi</th><th scope="col">Tahun Perbaikan Kurikulum</th>
             <th scope="col">Tanggal Pengesahan</th><th scope="col">Dokumen</th>
             <th scope="col">Link File Kurikulum</th><th scope="col">Monev Kurikulum</th>
             @if($internal)<th scope="col">Status Versi Terbaru</th>@endif
@@ -16,9 +16,9 @@
                     $externalUrl = $current?->safeExternalDocumentUrl();
                 @endphp
                 <tr>
+                    <td>{{ $program->faculty?->name }}</td>
                     <th scope="row">
                         {{ $program->name }}
-                        <small>{{ $program->faculty?->name }}</small>
                         @if($current)<small>{{ $current->name }}</small>
                         @else<small>Belum ada kurikulum yang dipublikasikan.</small>@endif
                     </th>
@@ -27,7 +27,7 @@
                     <td>
                         @if($current && $current->documents_count > 0)
                             @if($public)
-                                <a href="{{ route('study-programs.curricula.show', [$program->slug, $current->id]) }}#documents-title">Lihat Dokumen ({{ $current->documents_count }})</a>
+                                <a class="{{ $internal ? 'primary-button action-button secondary-button' : 'public-button secondary' }}" href="{{ route('study-programs.curricula.show', [$program->slug, $current->id]) }}#documents-title">Lihat Dokumen ({{ $current->documents_count }})</a>
                             @else
                                 {{ $current->documents_count }} dokumen (akses publik tidak tersedia)
                             @endif
@@ -36,7 +36,7 @@
                         @endif
                     </td>
                     <td>
-                        @if($externalUrl)<a href="{{ $externalUrl }}" target="_blank" rel="noopener noreferrer">Buka File Kurikulum</a>
+                        @if($externalUrl)<a class="{{ $internal ? 'primary-button action-button secondary-button' : 'public-button secondary' }}" href="{{ $externalUrl }}" target="_blank" rel="noopener noreferrer">Buka File Kurikulum</a>
                         @else Belum tersedia @endif
                     </td>
                     <td><x-monitoring-status :curriculum="$current" /></td>

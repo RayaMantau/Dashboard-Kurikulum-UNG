@@ -7,6 +7,7 @@ use App\Enums\UserRole;
 use App\Models\AuditLog;
 use App\Models\Curriculum;
 use App\Models\CurriculumCourse;
+use App\Models\Document;
 use App\Models\Semester;
 use App\Models\StudyProgram;
 use App\Models\User;
@@ -202,7 +203,8 @@ class SemesterManagementTest extends TestCase
     {
         [$user, $curriculum] = $this->context();
         Semester::factory()->create(['curriculum_id' => $curriculum->id, 'semester_number' => 4]);
-        $data = ['name' => $curriculum->name, 'year' => 2027, 'total_sks' => 144, 'total_semesters' => 3];
+        Document::factory()->create(['curriculum_id' => $curriculum->id, 'document_type' => Document::RATIFICATION_DECREE]);
+        $data = ['ratified_at' => '2026-01-01', 'external_document_url' => 'https://example.test/kurikulum.pdf', 'name' => $curriculum->name, 'year' => 2027, 'total_sks' => 144, 'total_semesters' => 3];
         $this->actingAs($user)->put(route('admin.curricula.update', $curriculum), $data)->assertSessionHasErrors('total_semesters');
         $this->assertSame(4, $curriculum->fresh()->total_semesters);
         $this->assertDatabaseCount('audit_logs', 0);

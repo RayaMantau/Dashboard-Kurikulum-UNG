@@ -4,6 +4,8 @@ namespace App\Services\Curriculum;
 
 use App\Enums\CurriculumStatus;
 use App\Models\Curriculum;
+use App\Models\Document;
+use App\Models\Faculty;
 use App\Models\StudyProgram;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,7 +22,16 @@ class CurriculumMonitoringService
         return $programs->with(['faculty:id,name,is_active', 'curricula' => fn (HasMany $query) => $query
             ->select(['id', 'study_program_id', 'name', 'year', 'ratified_at', 'external_document_url'])
             ->where('status', CurriculumStatus::PUBLISHED)
-            ->orderByDesc('published_at')->orderByDesc('id')->limit(1)->withCount('documents')]);
+            ->orderByDesc('published_at')->orderByDesc('id')->limit(1)->withCount(['documents' => fn (Builder $query) => $query->where('document_type', Document::CURRICULUM)])]);
+    }
+
+    /** @return Builder<StudyProgram> */
+    public function publicPrograms(): Builder
+    {
+        return $this->withCurrentCurriculum(StudyProgram::query()->where('is_active', true)
+            ->whereHas('faculty', fn (Builder $query) => $query->where('is_active', true)))
+            ->orderBy(Faculty::query()->select('name')->whereColumn('faculties.id', 'study_programs.faculty_id'))
+            ->orderBy('faculty_id')->orderBy('name')->orderBy('id');
     }
 
     /** @return array{state: string, label: string, minor: ?CarbonImmutable, reconstruction: ?CarbonImmutable} */

@@ -839,3 +839,43 @@ UI changes do not alter queries, Policies, workflow, snapshots or download stora
 Public/internal query count regressions remain covered by existing feature tests.
 403 uses the branded internal layout; 404/419/500 remain framework error pages.
 Production must keep APP_DEBUG=false; no environment configuration is changed here.
+
+
+## Revisi disetujui: homepage monitoring, SK dan reminder Monev
+
+Kontrak ini menggantikan ketentuan fase sebelumnya mengenai metadata opsional,
+dokumen tanpa jenis, dan belum adanya reminder. Homepage menampilkan monitoring
+current published per Prodi aktif/Faculty aktif, dengan pagination dan kolom Fakultas.
+Route monitoring lama dipertahankan untuk kompatibilitas, tanpa menu navbar.
+Tanggal pengesahan dan URL HTTP/HTTPS wajib saat create/edit; data lama tetap nullable.
+SK PDF privat wajib pada create/edit tanpa SK, dan pada submission bersama dokumen
+kurikulum biasa serta semua prasyarat existing. SK tidak dipublikasikan.
+Reminder in-app harian +2/+4 tahun ditujukan kepada Admin Prodi, Kaprodi dan Admin
+Fakultas aktif terkait. Hanya current published di unit aktif; dua milestone dikirim
+masing-masing sekali, termasuk catch-up. Tidak ada perubahan status workflow.
+
+### Implementation details for approved monitoring revision
+
+HomeController and compatibility monitoring controller reuse publicPrograms(),
+ordered by Faculty name/ID then Prodi name/ID, paginated 15. Current published is
+selected by published_at DESC, id DESC; active parents only. Ordinary document
+counts exclude SK. Public detail and download reject SK independently.
+
+SaveCurriculumRequest and CurriculumService recheck required date/URL/SK. Existing
+SK requires no reupload; a supplied replacement is rejected. If correction is
+needed, use authorized document deletion then upload SK through metadata edit,
+only while draft/revision. Ordinary upload cannot forge document_type. Metadata,
+SK Document and audits share the DB transaction; DocumentService compensates files
+on rollback. No semesters, attachments or workflow notifications are created.
+
+MonevReminderService reuses CurriculumMonitoringService date calculations with
+addYearsNoOverflow. Eligibility: current published, active parents, non-null date.
+Recipients: active same-Prodi Admin Prodi/Kaprodi, same-Faculty Admin Fakultas.
+No University Admin recipient. Daily command checks both milestones independently;
++4-year catch-up sends missing Minor and Reconstruction separately. A changed date
+does not resend an existing curriculum/recipient/milestone.
+
+NotificationTargetResolver checks ownership and current Policy before generating
+named internal links: Faculty monitoring filtered by Prodi name; Prodi/Kaprodi
+canonical curriculum history. Invalid/deleted/unauthorized targets have no Buka
+link. No URL from notification JSON is used.

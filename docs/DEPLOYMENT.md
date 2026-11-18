@@ -200,3 +200,44 @@ ignored. Jika secret pernah committed, hapus dari distribusi dan rotasi credenti
 
 Lakukan checklist release dan manual QA. Visual browser dan load benchmark belum
 terverifikasi otomatis; engineering complete tidak berarti telah deployed.
+
+## Homepage monitoring / SK / Monev reminder release
+
+Backup database and `storage/app/private-documents` together before migration.
+Deploy the additive document_type migration in maintenance mode before serving new
+code. Existing files are not moved; existing rows default to curriculum documents.
+No migrate:fresh on development/production. Test migrations on an isolated database.
+Legacy curricula remain readable; editable versions must complete ratified_at,
+HTTP/HTTPS URL and SK before save/submission. Never fabricate legacy SK or dates.
+SK is internal-only; no storage:link or public storage URL is needed.
+
+Upload SK uses PDF content/MIME + extension validation, maximum 10 MiB (10,240 KB).
+Set PHP upload_max_filesize >= 10M, post_max_size >= 12M, and web-server body limit
+>= 12M; check proxy limits and writable private storage. DB mutation/audit rollback
+compensates a new file using DocumentService. DB/filesystem are not one atomic
+transaction: crashes or cleanup failure require operator reconciliation of private
+orphan files. Errors are logged; no public URL is created.
+
+Configure the Laravel scheduler on the server; it is not configured by deployment
+of this source alone. Example Linux cron (replace paths and runtime user):
+
+```cron
+* * * * * cd /var/www/simkur && /usr/bin/php artisan schedule:run >> /var/log/simkur-scheduler.log 2>&1
+```
+
+The command `php artisan curriculum:send-monev-reminders` runs daily at 08:00 in
+config('app.timezone'), with withoutOverlapping. Verify that timezone (current
+default UTC) and schedule:list on the target; configure timezone intentionally
+before config:cache. Use an application-owned cache store for scheduler locks.
+Monitor scheduler exit/logs; no emails, queue worker, or external messaging needed.
+
+A manual run is supported and creates real notifications: run it only deliberately.
+A missed daily run catches up next run. At +4 years both missing milestones are
+sent once. Existing read notifications still suppress duplicates. Transactions
+are per program: a failure rolls back that program; already committed programs
+remain sent, and retry skips them. SQLite tests verify sequential idempotency and
+rollback, not production-engine concurrent lock contention; validate that on staging.
+Do not purge reminder notifications if lifetime duplicate suppression is required.
+
+Rollback to code without SK visibility checks is unsafe while SK records exist.
+Keep access closed and restore a consistent backup or retain the protection.

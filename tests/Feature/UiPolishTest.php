@@ -49,7 +49,7 @@ class UiPolishTest extends TestCase
         @$dom->loadHTML($response->getContent());
         $xpath = new \DOMXPath($dom);
         $this->assertSame(0, $xpath->query('//footer//a[normalize-space(.)="Beranda"]')->length);
-        foreach (['home', 'faculties.index', 'study-programs.index', 'search', 'monitoring.index'] as $name) {
+        foreach (['home', 'faculties.index', 'study-programs.index', 'search'] as $name) {
             $this->assertSame(1, $xpath->query('//nav[@id="public-navigation"]//a[@href="'.route($name).'"]')->length);
         }
         $this->assertSame(1, $xpath->query('//header//a[@href="'.route('login').'"]')->length);

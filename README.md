@@ -110,3 +110,12 @@ Phase 1–9 selesai. Hasil final Phase 10 dan batas verifikasinya dicatat di
 [development plan](docs/DEVELOPMENT-PLAN.md). Engineering readiness bukan bukti
 aplikasi sudah deployed: checklist server, visual QA dan operasional harus
 diselesaikan oleh operator pada lingkungan tujuan.
+
+### Monitoring dan pengingat Monev
+
+Homepage menampilkan monitoring current published pada unit aktif. Create/edit
+Admin Prodi memerlukan tanggal pengesahan, link HTTP/HTTPS, serta SK PDF privat
+(maks. 10 MB) jika belum tersedia. SK tidak ditampilkan/diunduh publik.
+Reminder in-app Minor +2 tahun dan Rekonstruksi +4 tahun dikirim sekali per
+penerima/milestone melalui `curriculum:send-monev-reminders`. Konfigurasikan
+Laravel scheduler di server; lihat [Deployment](docs/DEPLOYMENT.md).

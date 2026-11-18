@@ -6,13 +6,16 @@ use App\Enums\CurriculumStatus;
 use App\Enums\UserRole;
 use App\Models\AuditLog;
 use App\Models\Curriculum;
+use App\Models\Document;
 use App\Models\User;
+use App\Services\Document\DocumentService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
 class CurriculumService
@@ -32,6 +35,16 @@ class CurriculumService
             if ($record->exists && isset($data['total_semesters']) && (int) $data['total_semesters'] < (int) $record->semesters()->max('semester_number')) {
                 throw ValidationException::withMessages(['total_semesters' => 'Jumlah semester tidak boleh lebih kecil dari nomor semester tertinggi yang sudah ada.']);
             }
+            $hasSk = $record->exists && $record->documents()->where('document_type', Document::RATIFICATION_DECREE)->exists();
+            Validator::make($data, [
+                'ratified_at' => ['required', 'date_format:Y-m-d', 'after_or_equal:1000-01-01', 'before_or_equal:9995-12-31'],
+                'external_document_url' => ['required', 'url:http,https', 'max:2048'],
+                'sk' => [$hasSk ? 'prohibited' : 'required', 'file', 'mimes:pdf', 'mimetypes:application/pdf', 'extensions:pdf', 'max:10240'],
+            ], [
+                'ratified_at.required' => 'Tanggal pengesahan wajib diisi.',
+                'external_document_url.required' => 'Link file kurikulum wajib diisi.',
+                'sk.required' => 'SK pengesahan kurikulum wajib diunggah.',
+            ])->validate();
             $oldValues = $record->exists ? Arr::only($record->getAttributes(), self::AUDIT_FIELDS) : null;
             $record->fill(Arr::only($data, self::METADATA_FIELDS));
             if (! $record->exists) {
@@ -43,6 +56,9 @@ class CurriculumService
             $record->updated_by = $actor->id;
             $record->save();
             $record->refresh();
+            if (isset($data['sk'])) {
+                app(DocumentService::class)->upload($actor, $record, 'SK Pengesahan Kurikulum', $data['sk'], Document::RATIFICATION_DECREE);
+            }
 
             AuditLog::create([
                 'user_id' => $actor->id,

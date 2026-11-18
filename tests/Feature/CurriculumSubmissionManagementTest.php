@@ -38,7 +38,7 @@ class CurriculumSubmissionManagementTest extends TestCase
     private function ready(CurriculumStatus $status = CurriculumStatus::DRAFT): array
     {
         $actor = User::factory()->create(['role' => UserRole::STUDY_PROGRAM_ADMIN, 'is_active' => true, 'study_program_id' => StudyProgram::factory()]);
-        $curriculum = Curriculum::factory()->create([
+        $curriculum = Curriculum::factory()->withRatification()->create([
             'study_program_id' => $actor->study_program_id, 'created_by' => $actor->id,
             'status' => $status, 'total_semesters' => 2, 'total_sks' => 144,
             'effective_year' => null, 'description' => null,
@@ -185,7 +185,7 @@ class CurriculumSubmissionManagementTest extends TestCase
         $this->assertSame('%PDF-1.4 test content', Storage::disk('documents')->get($document->file_path));
         $this->assertDatabaseCount('curricula', 1);
         $this->assertDatabaseCount('curriculum_reviews', 1);
-        $this->assertDatabaseCount('documents', 1);
+        $this->assertDatabaseCount('documents', 2);
     }
 
     public static function lockedStatuses(): array
@@ -261,7 +261,7 @@ class CurriculumSubmissionManagementTest extends TestCase
         $this->assertDatabaseCount('audit_logs', 1);
     }
 
-    public function test_readiness_uses_three_scoped_queries_and_does_not_scan_document_storage(): void
+    public function test_readiness_uses_four_scoped_queries_and_does_not_scan_document_storage(): void
     {
         [$actor, $curriculum, , , $document] = $this->ready();
         Storage::disk('documents')->delete($document->file_path);
@@ -270,9 +270,9 @@ class CurriculumSubmissionManagementTest extends TestCase
         $queries = DB::getQueryLog();
         DB::disableQueryLog();
         $this->assertTrue($readiness['is_ready']);
-        $this->assertCount(3, $queries);
-        $this->assertStringContainsString('semester_number', $queries[0]['query']);
-        $this->assertStringStartsWith('select exists(', $queries[1]['query']);
+        $this->assertCount(4, $queries);
+        $this->assertStringContainsString('semester_number', $queries[1]['query']);
+        $this->assertStringStartsWith('select exists(', $queries[0]['query']);
         $this->assertStringStartsWith('select exists(', $queries[2]['query']);
         foreach ($queries as $query) {
             $this->assertStringContainsString('curriculum_id', $query['query']);

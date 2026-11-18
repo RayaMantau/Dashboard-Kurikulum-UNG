@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CurriculumIndexRequest;
 use App\Http\Requests\SaveCurriculumRequest;
 use App\Models\Curriculum;
+use App\Models\Document;
 use App\Services\Curriculum\CurriculumService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,14 +19,14 @@ class CurriculumController extends Controller
     {
         abort_unless($request->user()->studyProgram !== null, 403);
 
-        return view('admin.curricula.create', ['curriculum' => new Curriculum, 'studyProgram' => $request->user()->studyProgram]);
+        return view('admin.curricula.create', ['hasSk' => false, 'curriculum' => new Curriculum, 'studyProgram' => $request->user()->studyProgram]);
     }
 
     public function edit(Request $request, Curriculum $curriculum): View
     {
         abort_unless($request->user()->studyProgram !== null, 403);
 
-        return view('admin.curricula.edit', ['curriculum' => $curriculum, 'studyProgram' => $request->user()->studyProgram]);
+        return view('admin.curricula.edit', ['hasSk' => $curriculum->documents()->where('document_type', Document::RATIFICATION_DECREE)->exists(), 'curriculum' => $curriculum, 'studyProgram' => $request->user()->studyProgram]);
     }
 
     public function store(SaveCurriculumRequest $request, CurriculumService $service): RedirectResponse

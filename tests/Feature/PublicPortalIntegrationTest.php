@@ -207,7 +207,7 @@ class PublicPortalIntegrationTest extends TestCase
         $program = $older->studyProgram;
         $this->assertSame($tie->name, $this->get(route('study-programs.show', $program->slug))->assertOk()->viewData('curriculum')->name);
         $this->assertSame($tie->id, $this->get(route('study-programs.curricula.index', $program->slug))->assertOk()->viewData('current')->id);
-        $this->assertSame([$tie->id, $newer->id, $older->id], $this->get(route('home'))->assertOk()->viewData('curricula')->modelKeys());
+        $this->assertSame($tie->id, $this->get(route('home'))->assertOk()->viewData('programs')->first()->curricula->first()->id);
         $this->assertSame(3, $program->curricula()->where('status', CurriculumStatus::PUBLISHED)->count());
     }
 }

@@ -16,7 +16,9 @@ use App\Models\User;
 use App\Services\Curriculum\CurriculumService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -31,9 +33,15 @@ class CurriculumMetadataTest extends TestCase
         return User::factory()->create(['role' => UserRole::STUDY_PROGRAM_ADMIN, 'is_active' => true, 'study_program_id' => StudyProgram::factory()]);
     }
 
-    private function data(): array
+    protected function setUp(): void
     {
-        return ['name' => 'Kurikulum 2027', 'year' => 2027, 'effective_year' => null, 'total_sks' => '144.50', 'total_semesters' => 8, 'description' => 'Deskripsi kurikulum.'];
+        parent::setUp();
+        Storage::fake('documents');
+    }
+
+    private function data(?Curriculum $record = null): array
+    {
+        return [...($record?->documents()->where('document_type', Document::RATIFICATION_DECREE)->exists() ? [] : ['sk' => UploadedFile::fake()->createWithContent('sk.pdf', "%PDF-1.4\n%%EOF")]), 'ratified_at' => '2026-01-01', 'external_document_url' => 'https://example.test/kurikulum.pdf', 'name' => 'Kurikulum 2027', 'year' => 2027, 'effective_year' => null, 'total_sks' => '144.50', 'total_semesters' => 8, 'description' => 'Deskripsi kurikulum.'];
     }
 
     private function forged(): array
@@ -69,15 +77,16 @@ class CurriculumMetadataTest extends TestCase
         foreach (['submitted_at', 'approved_at', 'published_at', 'archived_at'] as $field) {
             $this->assertNull($record->{$field});
         }
-        $audit = AuditLog::sole();
+        $audit = AuditLog::where('action', 'curriculum.created')->sole();
         $this->assertSame('curriculum.created', $audit->action);
         $this->assertSame(Curriculum::class, $audit->entity_type);
         $this->assertSame($record->id, $audit->entity_id);
         $this->assertNull($audit->old_values);
         $this->assertSame('draft', $audit->new_values['status']);
-        foreach (['semesters', 'curriculum_courses', 'documents', 'curriculum_reviews', 'notifications'] as $table) {
+        foreach (['semesters', 'curriculum_courses', 'curriculum_reviews', 'notifications'] as $table) {
             $this->assertDatabaseCount($table, 0);
         }
+        $this->assertDatabaseHas('documents', ['curriculum_id' => $record->id, 'document_type' => Document::RATIFICATION_DECREE]);
         $this->post(route('admin.curricula.store'), $this->data())->assertSessionHasNoErrors();
         $this->assertDatabaseCount('curricula', 2);
     }
@@ -96,7 +105,7 @@ class CurriculumMetadataTest extends TestCase
         $editable = in_array($status, [CurriculumStatus::DRAFT, CurriculumStatus::REVISION], true);
         $this->actingAs($actor)->get(route('admin.curricula.edit', $record))->assertStatus($editable ? 200 : 403);
         foreach (['put', 'patch'] as $method) {
-            $response = $this->{$method}(route('admin.curricula.update', $record), [...$this->data(), ...$this->forged()]);
+            $response = $this->{$method}(route('admin.curricula.update', $record), [...$this->data($record), ...$this->forged()]);
             if ($editable) {
                 $response->assertRedirect(route('admin.curricula.edit', $record))->assertSessionHasNoErrors();
                 $updated = $record->fresh();
@@ -190,12 +199,13 @@ class CurriculumMetadataTest extends TestCase
         Document::factory()->create(['curriculum_id' => $record->id]);
         CurriculumReview::create(['curriculum_id' => $record->id, 'reviewer_id' => User::factory()->create(['role' => UserRole::HEAD_OF_STUDY_PROGRAM, 'study_program_id' => $actor->study_program_id])->id, 'status' => 'revision', 'notes' => 'Perbaiki metadata.', 'reviewed_at' => now()]);
         $course->update(['code' => 'NEW101', 'name' => 'Identitas master baru']);
+        Document::factory()->create(['curriculum_id' => $record->id, 'document_type' => Document::RATIFICATION_DECREE]);
         $tables = ['semesters', 'curriculum_courses', 'documents', 'curriculum_reviews', 'notifications'];
         $before = [];
         foreach ($tables as $table) {
             $before[$table] = DB::table($table)->get()->toJson();
         }
-        $this->actingAs($actor)->patch(route('admin.curricula.update', $record), [...$this->data(), ...$this->forged(), 'total_semesters' => 12, 'total_sks' => '160.25'])
+        $this->actingAs($actor)->patch(route('admin.curricula.update', $record), [...$this->data($record), ...$this->forged(), 'total_semesters' => 12, 'total_sks' => '160.25'])
             ->assertSessionHasNoErrors();
         foreach ($tables as $table) {
             $this->assertSame($before[$table], DB::table($table)->get()->toJson());
@@ -271,6 +281,6 @@ class CurriculumMetadataTest extends TestCase
             $this->assertSame(403, $exception->getStatusCode());
         }
         $this->assertSame($before, $record->fresh()->getAttributes());
-        $this->assertDatabaseCount('audit_logs', 1);
+        $this->assertDatabaseCount('audit_logs', 2);
     }
 }

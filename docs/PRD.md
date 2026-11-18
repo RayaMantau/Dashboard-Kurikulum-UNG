@@ -169,3 +169,17 @@ Program Studi dapat digunakan sebagai referensi pengisian.
 -   Publish mengarsipkan curriculum published sebelumnya.
 -   Dokumen menjadi public ketika curriculum published.
 -   Business rules penting memiliki automated tests.
+
+
+## Revisi disetujui: homepage monitoring, SK dan reminder Monev
+
+Kontrak ini menggantikan ketentuan fase sebelumnya mengenai metadata opsional,
+dokumen tanpa jenis, dan belum adanya reminder. Homepage menampilkan monitoring
+current published per Prodi aktif/Faculty aktif, dengan pagination dan kolom Fakultas.
+Route monitoring lama dipertahankan untuk kompatibilitas, tanpa menu navbar.
+Tanggal pengesahan dan URL HTTP/HTTPS wajib saat create/edit; data lama tetap nullable.
+SK PDF privat wajib pada create/edit tanpa SK, dan pada submission bersama dokumen
+kurikulum biasa serta semua prasyarat existing. SK tidak dipublikasikan.
+Reminder in-app harian +2/+4 tahun ditujukan kepada Admin Prodi, Kaprodi dan Admin
+Fakultas aktif terkait. Hanya current published di unit aktif; dua milestone dikirim
+masing-masing sekali, termasuk catch-up. Tidak ada perubahan status workflow.

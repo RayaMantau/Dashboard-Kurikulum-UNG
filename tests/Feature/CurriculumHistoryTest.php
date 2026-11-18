@@ -18,7 +18,9 @@ use App\Services\Curriculum\CurriculumReviewService;
 use App\Services\Curriculum\CurriculumService;
 use App\Services\Curriculum\CurriculumSubmissionService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
@@ -26,13 +28,19 @@ class CurriculumHistoryTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Storage::fake('documents');
+    }
+
     /** @return array{User, User, Curriculum} */
     private function context(): array
     {
         $program = StudyProgram::factory()->create();
         $admin = User::factory()->create(['name' => 'Operator Kurikulum', 'role' => UserRole::STUDY_PROGRAM_ADMIN, 'study_program_id' => $program->id, 'is_active' => true]);
         $head = User::factory()->create(['name' => 'Reviewer Kurikulum', 'role' => UserRole::HEAD_OF_STUDY_PROGRAM, 'study_program_id' => $program->id, 'is_active' => true]);
-        $curriculum = app(CurriculumService::class)->saveMetadata($admin, ['name' => 'Versi Riwayat', 'year' => 2026, 'total_sks' => 144, 'total_semesters' => 1]);
+        $curriculum = app(CurriculumService::class)->saveMetadata($admin, ['ratified_at' => '2026-01-01', 'external_document_url' => 'https://example.test/kurikulum.pdf', 'sk' => UploadedFile::fake()->createWithContent('sk.pdf', "%PDF-1.4\n%%EOF"), 'name' => 'Versi Riwayat', 'year' => 2026, 'total_sks' => 144, 'total_semesters' => 1]);
         $semester = Semester::factory()->create(['curriculum_id' => $curriculum->id, 'semester_number' => 1]);
         $course = Course::factory()->create(['study_program_id' => $program->id]);
         CurriculumCourse::factory()->create(['curriculum_id' => $curriculum->id, 'semester_id' => $semester->id, 'course_id' => $course->id]);

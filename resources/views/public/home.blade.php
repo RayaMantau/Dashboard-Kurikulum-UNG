@@ -63,21 +63,12 @@
         <div class="public-container">
             <div class="section-heading">
                 <div><p class="public-eyebrow">INFORMASI TERKINI</p><h2 id="curriculum-title">Kurikulum aktif terbaru</h2></div>
-                <p>Cuplikan kurikulum yang telah dipublikasikan oleh program studi.</p>
             </div>
-            @if($curricula->isEmpty())
-                <p class="public-empty">Belum ada kurikulum aktif yang dipublikasikan.</p>
+            @if($programs->isEmpty())
+                <p class="public-empty">Belum ada Program Studi yang tersedia.</p>
             @else
-                <div class="curriculum-grid">
-                    @foreach($curricula as $curriculum)
-                        <article class="curriculum-card">
-                            <div class="card-top"><span class="public-badge">Dipublikasikan</span><span>Tahun {{ $curriculum->year }}</span></div>
-                            <h3>{{ $curriculum->name }}</h3>
-                            <p>{{ $curriculum->studyProgram->name }}</p>
-                            <p class="card-caption">{{ $curriculum->studyProgram->faculty->name }}</p>
-                        </article>
-                    @endforeach
-                </div>
+                <x-monitoring-table :programs="$programs" />
+                <x-public.pagination :paginator="$programs" label="Program Studi" />
             @endif
         </div>
     </section>

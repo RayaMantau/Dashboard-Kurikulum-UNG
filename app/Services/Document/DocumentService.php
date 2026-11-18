@@ -24,7 +24,7 @@ use Throwable;
 
 class DocumentService
 {
-    private const AUDIT_FIELDS = ['curriculum_id', 'title', 'file_name', 'file_type', 'file_size', 'uploaded_by'];
+    private const AUDIT_FIELDS = ['curriculum_id', 'document_type', 'title', 'file_name', 'file_type', 'file_size', 'uploaded_by'];
 
     public function authorize(User $actor, Curriculum $curriculum, ?Document $document = null, bool $mutating = false): void
     {
@@ -41,8 +41,9 @@ class DocumentService
         return $curriculum->documents()->with('uploader:id,name')->latest('id')->paginate(15);
     }
 
-    public function upload(User $actor, Curriculum $curriculum, string $title, UploadedFile $file): Document
+    public function upload(User $actor, Curriculum $curriculum, string $title, UploadedFile $file, string $documentType = Document::CURRICULUM): Document
     {
+        abort_unless(in_array($documentType, [Document::CURRICULUM, Document::RATIFICATION_DECREE], true), 422);
         $path = null;
         $cleanup = function () use (&$path): void {
             if ($path === null) {
@@ -58,7 +59,7 @@ class DocumentService
             $path = null;
         };
         try {
-            return DB::transaction(function () use ($actor, $curriculum, $title, $file, &$path, $cleanup): Document {
+            return DB::transaction(function () use ($actor, $curriculum, $title, $file, $documentType, &$path, $cleanup): Document {
                 $actor = User::query()->lockForUpdate()->findOrFail($actor->id);
                 $curriculum = Curriculum::query()->lockForUpdate()->findOrFail($curriculum->id);
                 $this->authorize($actor, $curriculum, null, true);
@@ -71,11 +72,12 @@ class DocumentService
                     }
                 } catch (Throwable $exception) {
                     report($exception);
-                    throw ValidationException::withMessages(['file' => 'Dokumen gagal disimpan. Silakan coba kembali.']);
+                    throw ValidationException::withMessages([$documentType === Document::RATIFICATION_DECREE ? 'sk' : 'file' => 'Dokumen gagal disimpan. Silakan coba kembali.']);
                 }
 
                 $document = Document::create([
                     'curriculum_id' => $curriculum->id,
+                    'document_type' => $documentType,
                     'title' => $title,
                     'file_name' => $this->safeFilename($file->getClientOriginalName()),
                     'file_path' => $path,
@@ -117,7 +119,8 @@ class DocumentService
         abort_unless($studyProgram->is_active && $studyProgram->faculty?->is_active
             && $curriculum->study_program_id === $studyProgram->id
             && in_array($curriculum->status, [CurriculumStatus::PUBLISHED, CurriculumStatus::ARCHIVED], true)
-            && $document->curriculum_id === $curriculum->id, 404);
+            && $document->curriculum_id === $curriculum->id
+            && $document->document_type === Document::CURRICULUM, 404);
 
         return $this->streamDocument($document);
     }

@@ -70,7 +70,8 @@ When a new curriculum is published, the previous published curriculum must be ar
 
 ## Public Documents
 
-Curriculum documents are public when their curriculum is published.
+Only documents with document_type=curriculum are public when their curriculum is published.
+Ratification decrees (SK) remain internal even for published/archived curricula.
 
 Archived curriculum documents remain available as historical documents.
 

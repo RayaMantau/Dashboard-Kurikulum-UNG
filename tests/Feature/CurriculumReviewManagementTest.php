@@ -336,6 +336,7 @@ class CurriculumReviewManagementTest extends TestCase
     public function test_revision_resubmit_approve_loop_preserves_history_and_locks_all_mutations(): void
     {
         [$admin, $head, $curriculum, $semester, $attachment, $document] = $this->fixture();
+        Document::factory()->create(['curriculum_id' => $curriculum->id, 'document_type' => Document::RATIFICATION_DECREE]);
         $this->actingAs($head)->get(route('dashboard'))->assertOk()->assertViewHas('metrics', ['Menunggu Review' => 1, 'Disetujui' => 0, 'Dipublikasikan' => 0]);
         $this->actingAs($head)->post(route('kaprodi.submissions.revision', $curriculum), ['notes' => 'Perbaiki metadata.'])->assertRedirect();
         $this->actingAs($admin)->get(route('admin.curricula.edit', $curriculum))->assertOk();
@@ -344,7 +345,7 @@ class CurriculumReviewManagementTest extends TestCase
         $this->get(route('admin.curricula.documents.create', $curriculum))->assertOk();
         $this->put(route('admin.curricula.update', $curriculum), [
             'name' => 'Metadata Diperbaiki', 'year' => 2026, 'effective_year' => 2026,
-            'total_sks' => 144, 'total_semesters' => 2, 'description' => 'Revisi metadata',
+            'total_sks' => 144, 'total_semesters' => 2, 'description' => 'Revisi metadata', 'ratified_at' => '2026-01-01', 'external_document_url' => 'https://example.test/kurikulum.pdf',
         ])->assertSessionHasNoErrors()->assertRedirect();
         $this->assertSame(CurriculumStatus::REVISION, $curriculum->fresh()->status);
         $this->put(route('admin.curricula.semesters.update', [$curriculum, $semester]), [

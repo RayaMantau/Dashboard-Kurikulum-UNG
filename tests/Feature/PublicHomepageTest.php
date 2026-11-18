@@ -27,7 +27,7 @@ class PublicHomepageTest extends TestCase
             ->assertViewHas('statistics', ['Fakultas Aktif' => 0, 'Program Studi Aktif' => 0, 'Kurikulum Aktif' => 0])
             ->assertSee('SIMKUR UNG')->assertSee('Universitas Negeri Gorontalo')
             ->assertSee('Belum ada fakultas aktif yang tersedia.')
-            ->assertSee('Belum ada kurikulum aktif yang dipublikasikan.')
+            ->assertSee('Belum ada Program Studi yang tersedia.')
             ->assertSee('href="'.route('login').'"', false)
             ->assertSee('href="'.asset('public.css').'"', false)
             ->assertDontSee('internal-sidebar')->assertDontSee('internal.css')->assertDontSee('Laravel');
@@ -82,7 +82,7 @@ class PublicHomepageTest extends TestCase
             }
         }
         $this->assertCount(1, $response->viewData('faculties'));
-        $this->assertCount(1, $response->viewData('curricula'));
+        $this->assertCount(1, $response->viewData('programs')->getCollection()->flatMap->curricula);
         $this->actingAs(User::factory()->create(['role' => UserRole::UNIVERSITY_ADMIN, 'is_active' => true]))->get(route('home'))
             ->assertViewHas('statistics', ['Fakultas Aktif' => 1, 'Program Studi Aktif' => 1, 'Kurikulum Aktif' => 1])
             ->assertDontSee('Version-draft')->assertDontSee('Version-approved');
@@ -111,9 +111,9 @@ class PublicHomepageTest extends TestCase
         }
         $response = $this->get(route('home'))->assertOk()->assertViewHas('statistics', ['Fakultas Aktif' => 8, 'Program Studi Aktif' => 8, 'Kurikulum Aktif' => 8]);
         $this->assertSame(['Fakultas 01', 'Fakultas 02', 'Fakultas 03', 'Fakultas 04', 'Fakultas 05', 'Fakultas 06'], $response->viewData('faculties')->pluck('name')->all());
-        $this->assertSame(array_reverse(array_slice($ids, -3)), $response->viewData('curricula')->modelKeys());
+        $this->assertSame($ids, $response->viewData('programs')->getCollection()->flatMap->curricula->pluck('id')->all());
         Curriculum::whereKey($ids[0])->update(['published_at' => now()->addMinute()]);
-        $this->assertSame($ids[0], $this->get(route('home'))->viewData('curricula')->first()->id);
+        $this->assertSame($ids[0], $this->get(route('home'))->viewData('programs')->first()->curricula->first()->id);
     }
 
     public function test_private_content_is_never_rendered_and_get_does_not_mutate_domain_data(): void
@@ -136,7 +136,7 @@ class PublicHomepageTest extends TestCase
         DB::disableQueryLog();
         foreach ($queries as $query) {
             $this->assertDoesNotMatchRegularExpression('/^\s*(insert|update|delete|replace)\b/i', $query['query']);
-            $this->assertDoesNotMatchRegularExpression('/\b(audit_logs|notifications|curriculum_reviews|documents)\b/i', $query['query']);
+            $this->assertDoesNotMatchRegularExpression('/\b(audit_logs|notifications|curriculum_reviews)\b/i', $query['query']);
         }
         foreach ($tables as $table) {
             $this->assertSame($before[$table], DB::table($table)->orderBy('id')->get()->toJson());

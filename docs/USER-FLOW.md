@@ -276,3 +276,17 @@ Klik Submit
 Daftar Kurikulum -> kolom Semester -> Struktur Semester -> Kelola Mata Kuliah pada semester -> daftar assignment yang difilter semester. Form tambah memilih semester konteks secara awal; validasi assignment tetap server-side. Setelah menyimpan, konteks mengikuti semester yang benar-benar tersimpan. Tanpa filter, route assignment lama tetap menampilkan semua semester.
 
 Daftar Kurikulum -> kolom Dokumen -> dokumen kurikulum. Riwayat dan Ajukan Review tetap pada kolom Aksi. Edit Semester -> Zona Berbahaya -> konfirmasi -> Hapus Semester kosong. Semester berisi mata kuliah tidak dapat dihapus. Kurikulum terkunci hanya memiliki akses baca pada struktur/dokumen. Master Course pada sidebar berbeda dari CurriculumCourse assignment; snapshot dan workflow tidak berubah.
+
+
+## Revisi disetujui: homepage monitoring, SK dan reminder Monev
+
+Kontrak ini menggantikan ketentuan fase sebelumnya mengenai metadata opsional,
+dokumen tanpa jenis, dan belum adanya reminder. Homepage menampilkan monitoring
+current published per Prodi aktif/Faculty aktif, dengan pagination dan kolom Fakultas.
+Route monitoring lama dipertahankan untuk kompatibilitas, tanpa menu navbar.
+Tanggal pengesahan dan URL HTTP/HTTPS wajib saat create/edit; data lama tetap nullable.
+SK PDF privat wajib pada create/edit tanpa SK, dan pada submission bersama dokumen
+kurikulum biasa serta semua prasyarat existing. SK tidak dipublikasikan.
+Reminder in-app harian +2/+4 tahun ditujukan kepada Admin Prodi, Kaprodi dan Admin
+Fakultas aktif terkait. Hanya current published di unit aktif; dua milestone dikirim
+masing-masing sekali, termasuk catch-up. Tidak ada perubahan status workflow.

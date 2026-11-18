@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Document;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -14,6 +15,7 @@ class SaveCurriculumRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
+        $this->files->replace(array_intersect_key($this->files->all(), ['sk' => true]));
         $this->replace($this->only(['name', 'year', 'effective_year', 'total_sks', 'total_semesters', 'description', 'ratified_at', 'external_document_url', '_token', '_method']));
     }
 
@@ -27,14 +29,15 @@ class SaveCurriculumRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'sk' => [$this->route('curriculum')?->documents()->where('document_type', Document::RATIFICATION_DECREE)->exists() ? 'prohibited' : 'required', 'file', 'mimes:pdf', 'mimetypes:application/pdf', 'extensions:pdf', 'max:10240'],
             'name' => ['required', 'string', 'max:255'],
             'year' => ['required', 'integer', 'between:0,65535'],
             'effective_year' => ['nullable', 'integer', 'between:0,65535'],
             'total_sks' => ['required', 'numeric', 'between:0,999.99', 'decimal:0,2'],
             'total_semesters' => ['required', 'integer', 'between:1,255'],
             'description' => ['nullable', 'string', 'max:10000'],
-            'ratified_at' => ['nullable', 'date_format:Y-m-d', 'after_or_equal:1000-01-01', 'before_or_equal:9995-12-31'],
-            'external_document_url' => ['nullable', 'string', 'url:http,https', 'max:2048'],
+            'ratified_at' => ['required', 'date_format:Y-m-d', 'after_or_equal:1000-01-01', 'before_or_equal:9995-12-31'],
+            'external_document_url' => ['required', 'string', 'url:http,https', 'max:2048'],
         ];
     }
 
@@ -42,6 +45,16 @@ class SaveCurriculumRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'ratified_at.required' => 'Tanggal pengesahan wajib diisi.',
+            'external_document_url.required' => 'Link file kurikulum wajib diisi.',
+            'sk.prohibited' => 'SK sudah tersedia. Hapus melalui Kelola Dokumen terlebih dahulu jika perlu menggantinya.',
+            'sk.required' => 'SK pengesahan kurikulum wajib diunggah.',
+            'sk.file' => 'File SK tidak valid.',
+            'sk.uploaded' => 'File SK gagal diunggah.',
+            'sk.mimes' => 'SK harus berupa PDF yang valid.',
+            'sk.mimetypes' => 'Isi SK harus berupa PDF.',
+            'sk.extensions' => 'Ekstensi SK harus .pdf.',
+            'sk.max' => 'Ukuran SK maksimal 10 MB.',
             'name.required' => 'Nama kurikulum wajib diisi.',
             'name.string' => 'Nama kurikulum harus berupa teks.',
             'name.max' => 'Nama kurikulum maksimal 255 karakter.',

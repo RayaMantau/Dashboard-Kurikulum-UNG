@@ -138,3 +138,9 @@ Pada lebar maksimal 960px, JavaScript menyediakan tombol menu buka/tutup.
 Tanpa JavaScript, navigasi tetap terlihat. Beranda menyediakan CTA pencarian.
 Hasil pencarian memakai snapshot dalam konteks Curriculum/Semester; tidak ada
 halaman detail global master Course.
+
+### Current monitoring entry
+
+Homepage now contains the monitoring table. `/monitoring-kurikulum` remains a
+GET compatibility page, but is absent from both desktop/mobile navbar. No new
+public mutation or SK download route is introduced.

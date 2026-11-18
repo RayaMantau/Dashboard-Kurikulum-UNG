@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Enums\CurriculumStatus;
 use App\Models\Curriculum;
+use App\Models\Document;
 use App\Models\StudyProgram;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -13,6 +14,12 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class CurriculumFactory extends Factory
 {
+    public function withRatification(): static
+    {
+        return $this->state(['ratified_at' => '2026-01-01', 'external_document_url' => 'https://example.test/kurikulum.pdf'])
+            ->has(Document::factory()->state(['document_type' => Document::RATIFICATION_DECREE]), 'documents');
+    }
+
     public function definition(): array
     {
         return [

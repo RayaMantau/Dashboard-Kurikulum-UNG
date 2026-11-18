@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Services\Curriculum\CurriculumMonitoringService;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -180,22 +181,23 @@ class CurriculumMonitoringTest extends TestCase
     #[DataProvider('validUrls')]
     public function test_admin_prodi_can_create_and_update_monitoring_metadata_with_audit(string $url): void
     {
+        Storage::fake('documents');
         $actor = $this->actor();
         $this->actingAs($actor)->get(route('admin.curricula.create'))->assertOk()->assertSee('Tanggal Pengesahan')->assertSee('Link File Kurikulum');
-        $this->post(route('admin.curricula.store'), [...$this->metadata(), 'external_document_url' => $url, 'study_program_id' => 999, 'approved_at' => '2020-01-01'])
+        $this->post(route('admin.curricula.store'), [...$this->metadata(), 'sk' => UploadedFile::fake()->createWithContent('sk.pdf', "%PDF-1.4\n%%EOF"), 'external_document_url' => $url, 'study_program_id' => 999, 'approved_at' => '2020-01-01'])
             ->assertSessionHasNoErrors();
         $curriculum = Curriculum::sole();
         $this->assertSame($actor->study_program_id, $curriculum->study_program_id);
         $this->assertSame('2026-07-15', $curriculum->ratified_at->toDateString());
         $this->assertSame($url, $curriculum->external_document_url);
         $this->assertNull($curriculum->approved_at);
-        $this->assertSame($url, AuditLog::sole()->new_values['external_document_url']);
+        $this->assertSame($url, AuditLog::where('action', 'curriculum.created')->sole()->new_values['external_document_url']);
         $curriculum->update(['status' => CurriculumStatus::REVISION]);
-        $this->put(route('admin.curricula.update', $curriculum), [...$this->metadata(), 'year' => 2027, 'ratified_at' => '2027-08-12', 'external_document_url' => null])->assertSessionHasNoErrors();
+        $this->put(route('admin.curricula.update', $curriculum), [...$this->metadata(), 'year' => 2027, 'ratified_at' => '2027-08-12', 'external_document_url' => $url])->assertSessionHasNoErrors();
         $curriculum->refresh();
         $this->assertSame(2027, $curriculum->year);
         $this->assertSame('2027-08-12', $curriculum->ratified_at->toDateString());
-        $this->assertNull($curriculum->external_document_url);
+        $this->assertSame($url, $curriculum->external_document_url);
         $this->assertSame(CurriculumStatus::REVISION, $curriculum->status);
         $audit = AuditLog::where('action', 'curriculum.updated')->sole();
         $this->assertSame('2026-07-15', CarbonImmutable::parse($audit->old_values['ratified_at'])->toDateString());
@@ -249,6 +251,7 @@ class CurriculumMonitoringTest extends TestCase
     {
         $curriculum = Curriculum::factory()->create(['status' => $status]);
         $this->actingAs($this->actor($curriculum->studyProgram));
+        Document::factory()->create(['curriculum_id' => $curriculum->id, 'document_type' => Document::RATIFICATION_DECREE]);
         $response = $this->put(route('admin.curricula.update', $curriculum), $this->metadata());
         if (in_array($status, [CurriculumStatus::DRAFT, CurriculumStatus::REVISION], true)) {
             $response->assertSessionHasNoErrors();

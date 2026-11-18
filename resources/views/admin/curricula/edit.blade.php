@@ -9,7 +9,7 @@
     <header class="dashboard-heading"><p class="eyebrow">KURIKULUM PRODI</p><h1>Edit Kurikulum</h1><p>{{ $curriculum->name }}</p></header>
     <p class="dashboard-context">Program Studi {{ $studyProgram->name }}</p>
     <p>Status: <x-internal.status-badge :status="$curriculum->status" /></p><section class="portal-card management-form">
-        <form method="POST" action="{{ route('admin.curricula.update', $curriculum) }}" data-pending-form>
+        <form method="POST" enctype="multipart/form-data" action="{{ route('admin.curricula.update', $curriculum) }}" data-pending-form>
             @csrf
             @method('PUT')
             @include('admin.curricula.form')

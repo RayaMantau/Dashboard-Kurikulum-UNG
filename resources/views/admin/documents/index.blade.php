@@ -29,7 +29,7 @@
                     <tbody>
                         @foreach($documents as $document)
                             <tr>
-                                <th scope="row">{{ $document->title }}</th>
+                                <th scope="row">{{ $document->title }}@if($document->document_type === \App\Models\Document::RATIFICATION_DECREE)<small>SK pengesahan (internal)</small>@endif</th>
                                 <td>{{ $document->file_name }}</td>
                                 <td>{{ in_array($document->file_type, ['pdf', 'application/pdf'], true) ? 'PDF' : $document->file_type }}</td>
                                 <td>{{ $document->file_size === null ? '-' : ($document->file_size >= 1048576 ? number_format($document->file_size / 1048576, 2, ',', '.').' MB' : number_format($document->file_size / 1024, 2, ',', '.').' KB') }}</td>

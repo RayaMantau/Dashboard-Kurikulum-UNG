@@ -10,8 +10,13 @@ class Document extends Model
 {
     use HasFactory;
 
+    public const CURRICULUM = 'curriculum';
+
+    public const RATIFICATION_DECREE = 'ratification_decree';
+
     protected $fillable = [
         'curriculum_id',
+        'document_type',
         'title',
         'file_name',
         'file_path',

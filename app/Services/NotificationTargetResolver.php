@@ -37,6 +37,14 @@ class NotificationTargetResolver
                 continue;
             }
 
+            if (in_array($notification->type, ['monev_minor_due', 'reconstruction_due'], true)) {
+                $targets[$notification->id] = $user->role === UserRole::FACULTY_ADMIN
+                    ? route('faculty-admin.monitoring.index', ['search' => $curriculum->studyProgram->name])
+                    : route('internal.curricula.history', $curriculum);
+
+                continue;
+            }
+
             $route = match (true) {
                 Gate::forUser($user)->allows('review', $curriculum) => 'kaprodi.submissions.show',
                 Gate::forUser($user)->allows('publish', $curriculum) => 'kaprodi.submissions.publish.confirm',

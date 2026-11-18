@@ -19,16 +19,16 @@
     </div>
 @endforeach
 <div class="form-field">
-    <label for="ratified_at">Tanggal Pengesahan <span>(opsional)</span></label>
-    <input id="ratified_at" name="ratified_at" type="date" min="1000-01-01" max="9995-12-31"
+    <label for="ratified_at">Tanggal Pengesahan <span>(wajib)</span></label>
+    <input id="ratified_at" name="ratified_at" type="date" required min="1000-01-01" max="9995-12-31"
         value="{{ is_string(old('ratified_at', $curriculum->ratified_at?->format('Y-m-d'))) ? old('ratified_at', $curriculum->ratified_at?->format('Y-m-d')) : '' }}"
         aria-invalid="{{ $errors->has('ratified_at') ? 'true' : 'false' }}" aria-describedby="ratified-help @error('ratified_at') ratified-error @enderror">
     <p id="ratified-help">Tanggal pengesahan resmi, terpisah dari persetujuan review. Monev Minor dijadwalkan 2 tahun dan Rekonstruksi 4 tahun setelah tanggal ini.</p>
     @error('ratified_at')<p id="ratified-error" class="field-error" role="alert">{{ $message }}</p>@enderror
 </div>
 <div class="form-field">
-    <label for="external_document_url">Link File Kurikulum <span>(opsional)</span></label>
-    <input id="external_document_url" name="external_document_url" type="url" maxlength="2048"
+    <label for="external_document_url">Link File Kurikulum <span>(wajib)</span></label>
+    <input id="external_document_url" name="external_document_url" type="url" required maxlength="2048"
         value="{{ is_string(old('external_document_url', $curriculum->external_document_url)) ? old('external_document_url', $curriculum->external_document_url) : '' }}"
         aria-invalid="{{ $errors->has('external_document_url') ? 'true' : 'false' }}" aria-describedby="external-link-help @error('external_document_url') external-link-error @enderror">
     <p id="external-link-help">Gunakan alamat HTTP/HTTPS yang dapat diakses publik. Link eksternal tidak menggantikan unggahan dokumen PDF untuk pengajuan review.</p>
@@ -39,4 +39,16 @@
     <textarea id="description" name="description" rows="6" maxlength="10000"
         aria-invalid="{{ $errors->has('description') ? 'true' : 'false' }}" @error('description') aria-describedby="description-error" @enderror>{{ old('description', $curriculum->description) }}</textarea>
     @error('description')<p id="description-error" class="field-error" role="alert">{{ $message }}</p>@enderror
+</div>
+
+<div class="form-field">
+    @if($hasSk)
+        <p>SK pengesahan sudah tersedia. Tidak perlu mengunggah ulang.</p>
+        <a href="{{ route('admin.curricula.documents.index', $curriculum) }}">Lihat SK di Kelola Dokumen</a>
+    @else
+        <label for="sk">Upload SK <span>(wajib)</span></label>
+        <input id="sk" name="sk" type="file" accept=".pdf,application/pdf" required aria-invalid="{{ $errors->has('sk') ? 'true' : 'false' }}" aria-describedby="sk-help @error('sk') sk-error @enderror">
+        <p id="sk-help">Unggah Surat Keputusan (SK) pengesahan kurikulum dalam format PDF. Maksimal 10 MB. SK hanya tersedia untuk akses internal yang diizinkan.</p>
+    @endif
+    @error('sk')<p id="sk-error" class="field-error" role="alert">{{ $message }}</p>@enderror
 </div>

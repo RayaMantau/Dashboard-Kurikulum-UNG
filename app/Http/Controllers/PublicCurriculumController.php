@@ -34,7 +34,7 @@ class PublicCurriculumController extends Controller
             ->with(['curriculumCourses' => fn (HasMany $query): HasMany => $this->structureAttachments($query, $curriculum)])
             ->get();
 
-        $documents = $curriculum->documents()->latest('id')->get(['id', 'title', 'file_name', 'file_size'])
+        $documents = $curriculum->documents()->where('document_type', Document::CURRICULUM)->latest('id')->get(['id', 'title', 'file_name', 'file_size'])
             ->each(function (Document $document) use ($documentService): void {
                 $document->file_name = $documentService->safeFilename($document->file_name);
             });

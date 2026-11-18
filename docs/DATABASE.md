@@ -248,3 +248,22 @@ curricula.year - semesters.curriculum_id - courses.study_program_id -
 curriculum_courses.curriculum_id - curriculum_courses.semester_id -
 curriculum_courses.course_id - notifications.user_id/read_at -
 audit_logs.entity_type/entity_id
+
+## Monitoring revision: document types
+
+Migration `2026_11_17_134305_add_document_type_to_documents_table` adds
+`documents.document_type VARCHAR(32) NOT NULL DEFAULT 'curriculum'`. Existing rows
+remain ordinary curriculum documents. Constants Document::CURRICULUM and
+Document::RATIFICATION_DECREE identify ordinary documents and internal SK. No title
+parsing, separate storage, new workflow status, or reminder table is introduced.
+
+Notifications use existing type and JSON data (curriculum_id, study_program_id,
+reminder_type, due_date). Logical uniqueness is recipient + curriculum + milestone.
+The reminder writer serializes each program using the same StudyProgram row lock
+as publication, then locks the current Curriculum and checks existing notifications.
+This is service-enforced uniqueness, not a new database unique constraint; other
+writers of these reminder types must use MonevReminderService.
+
+Do not roll back the document_type migration while SK records exist: old code
+would treat them as ordinary public documents. Disable public document access and
+restore a consistent pre-release DB/private-file backup if rollback is necessary.

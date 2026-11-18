@@ -54,7 +54,7 @@ class CurriculumWorkflowIntegrationTest extends TestCase
         /*
          * Kurikulum baru.
          */
-        $newCurriculum = Curriculum::factory()->create([
+        $newCurriculum = Curriculum::factory()->withRatification()->create([
             'study_program_id' => $studyProgram->id,
             'created_by' => $admin->id,
             'name' => 'Kurikulum 2025',

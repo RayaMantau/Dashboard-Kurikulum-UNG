@@ -32,7 +32,7 @@ class CurriculumSubmissionServiceTest extends TestCase
             'study_program_id' => $studyProgram->id,
         ]);
 
-        $curriculum = Curriculum::factory()->create([
+        $curriculum = Curriculum::factory()->withRatification()->create([
             'study_program_id' => $studyProgram->id,
             'created_by' => $user->id,
             'status' => CurriculumStatus::DRAFT,
@@ -121,7 +121,7 @@ class CurriculumSubmissionServiceTest extends TestCase
             'study_program_id' => $studyProgram->id,
         ]);
 
-        $curriculum = Curriculum::factory()->create([
+        $curriculum = Curriculum::factory()->withRatification()->create([
             'study_program_id' => $studyProgram->id,
             'created_by' => $user->id,
             'status' => CurriculumStatus::REVISION,

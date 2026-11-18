@@ -35,7 +35,7 @@ class SemesterCompletenessTest extends TestCase
     private function context(int $total, array $numbers): array
     {
         $user = User::factory()->create(['role' => UserRole::STUDY_PROGRAM_ADMIN, 'is_active' => true, 'study_program_id' => StudyProgram::factory()]);
-        $curriculum = Curriculum::factory()->create(['study_program_id' => $user->study_program_id, 'total_semesters' => $total]);
+        $curriculum = Curriculum::factory()->withRatification()->create(['study_program_id' => $user->study_program_id, 'total_semesters' => $total]);
         foreach ($numbers as $number) {
             Semester::factory()->create(['curriculum_id' => $curriculum->id, 'semester_number' => $number]);
         }

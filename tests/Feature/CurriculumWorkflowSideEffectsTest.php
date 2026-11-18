@@ -188,7 +188,7 @@ class CurriculumWorkflowSideEffectsTest extends TestCase
         User $admin,
         CurriculumStatus $status
     ): Curriculum {
-        $curriculum = Curriculum::factory()->create([
+        $curriculum = Curriculum::factory()->withRatification()->create([
             'study_program_id' => $studyProgram->id,
             'created_by' => $admin->id,
             'status' => $status,
